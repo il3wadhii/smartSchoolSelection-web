@@ -1,0 +1,43 @@
+{
+  "name": "smartschoolselection-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Smart School Selection - User-facing web app for browsing schools, fees, seats and reviews",
+  "scripts": {
+    "dev": "next dev -p 3003",
+    "build": "next build",
+    "start": "next start -p 3003",
+    "lint": "next lint"
+  },
+  "keywords": [
+    "school",
+    "education",
+    "kuwait",
+    "web",
+    "nextjs"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/js-cookie": "^3.0.6",
+    "@types/leaflet": "^1.9.21",
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "autoprefixer": "^10.4.21",
+    "axios": "^1.11.0",
+    "js-cookie": "^3.0.5",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.539.0",
+    "next": "^15.4.6",
+    "postcss": "^8.5.6",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-leaflet": "^5.0.0",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.9.2"
+  },
+  "devDependencies": {
+    "eslint-config-next": "^15.4.6"
+  }
+}

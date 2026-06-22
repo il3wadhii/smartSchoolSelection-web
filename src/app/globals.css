@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Variables for programmatic color usage (brand-mapped Roots tokens) */
+:root {
+  --color-primary: #1A8A8C;   /* teal — hero/trust (logo S) */
+  --color-primary-dark: #105859;
+  --color-cta: #F77F00;       /* orange — warm CTA (logo pencil) */
+  --color-cta-soft: #FFF3E6;
+  --color-ink: #1B3A57;       /* text — brand navy (logo text) */
+  --color-muted: #6B7A8C;
+  --color-line: #E3E8EE;
+  --color-bg: #F6F8FA;
+  --color-good: #2E8B6E;
+  --color-secondary: #1B3A57;
+  --color-accent: #E63946;
+}
+
+@layer base {
+  body {
+    @apply bg-surface text-ink;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-serif text-ink;
+  }
+}
+
+@layer components {
+  /* Warm primary CTA — prototype .go-btn */
+  .btn-cta {
+    @apply w-full rounded-btn bg-orange-500 text-white font-extrabold text-[15.5px] py-[15px] px-4 transition-transform duration-150 active:scale-[.97] disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-cta-alt {
+    @apply w-full rounded-btn bg-white border-[1.5px] border-primary-500 text-primary-600 font-extrabold text-[15.5px] py-[14px] px-4 transition-transform duration-150 active:scale-[.97];
+  }
+
+  /* legacy aliases still used on auth/profile pages */
+  .btn-primary {
+    @apply bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded-btn transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply bg-secondary-500 hover:bg-secondary-600 text-white font-bold py-2 px-4 rounded-btn transition-colors duration-200 disabled:opacity-50;
+  }
+  .btn-outline {
+    @apply border border-primary-500 text-primary-600 hover:bg-primary-100 font-bold py-2 px-4 rounded-btn transition-colors duration-200;
+  }
+
+  .input-field {
+    @apply w-full px-3 py-3 border-[1.5px] border-line rounded-chip font-bold text-sm text-ink bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200;
+  }
+
+  .card {
+    @apply bg-white rounded-card border border-line;
+  }
+
+  /* Prototype label style: tiny uppercase tracked */
+  .f-label {
+    @apply text-[11.5px] tracking-[.1em] uppercase text-muted font-extrabold;
+  }
+
+  /* Age / filter chips */
+  .chip {
+    @apply rounded-chip border-[1.5px] border-line bg-white px-3 py-2 text-sm font-bold cursor-pointer transition-all duration-150 text-ink;
+  }
+  .chip-on {
+    @apply bg-primary-500 border-primary-500 text-white;
+  }
+
+  .fpill {
+    @apply rounded-full border-[1.5px] border-line bg-white whitespace-nowrap px-3.5 py-2 text-[12.5px] font-extrabold cursor-pointer text-ink transition-colors;
+  }
+  .fpill-on {
+    @apply bg-primary-500 border-primary-500 text-white;
+  }
+
+  .badge-verified {
+    @apply inline-flex items-center gap-1 text-[10.5px] font-extrabold text-good bg-[#E7F4EF] rounded-full px-2 py-[3px];
+  }
+
+  .rate-chip {
+    @apply bg-orange-100 text-[#9A5B12] rounded-[10px] px-2 py-1 font-extrabold text-[12.5px] shrink-0;
+  }
+}
+
+@layer utilities {
+  .shadow-finder {
+    box-shadow: 0 12px 36px rgba(16, 88, 89, 0.12);
+  }
+  .skeleton {
+    @apply bg-gray-200 animate-pulse rounded;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 rounded-full;
+}
+
+/* hide horizontal scrollbar on the pill bar */
+.fbar {
+  scrollbar-width: none;
+}
+.fbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
