@@ -9,7 +9,7 @@ import { ApiResponse, User } from '@/types'
 function resolveApiUrl(): string {
   const envUrl = process.env.NEXT_PUBLIC_API_URL
   if (typeof window === 'undefined') {
-    return envUrl ?? 'https://api.smartschoolselection.cloud'
+    return envUrl || ''
   }
   const host = window.location.hostname
   const isLocalOrLan =
@@ -19,9 +19,10 @@ function resolveApiUrl(): string {
     /^10\./.test(host) ||
     /^172\.(1[6-9]|2\d|3[01])\./.test(host)
   if (isLocalOrLan) return `http://${host}:3001`
-  // Non-local host (public tunnel): '' means same-origin → the Next rewrite
-  // proxies /api and /uploads to the local API, so only one tunnel is needed.
-  return envUrl ?? 'https://api.smartschoolselection.cloud'
+  // Non-local host (public tunnel): default to same-origin ('') so the Next
+  // rewrite proxies /api and /uploads to the local API (one tunnel, no CORS).
+  // An explicit NEXT_PUBLIC_API_URL still wins (e.g. real production).
+  return envUrl || ''
 }
 
 export const API_URL = resolveApiUrl()

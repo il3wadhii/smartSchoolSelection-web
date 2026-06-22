@@ -280,3 +280,24 @@
 .prev-note-txt p { font-size: 13px; color: var(--muted); margin: 3px 0 0; line-height: 1.45; }
 .prev-note .btnT { flex-shrink: 0; }
 @media (max-width: 560px) { .prev-note { flex-direction: column; align-items: flex-start; } .prev-note .btnT { align-self: stretch; justify-content: center; } }
+
+/* ── Mobile bottom tab bar + small-screen touch-ups ────── */
+.prev-tabbar { display: none; }
+@media (max-width: 860px) {
+  .prev-tabbar {
+    display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+    background: #fff; border-top: 1px solid var(--line);
+    padding: 6px 4px; padding-bottom: max(6px, env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 16px rgba(0,0,0,.05);
+  }
+  .prev-tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 0; font-family: var(--font-poppins); font-weight: 700; font-size: 11px; color: var(--muted); }
+  .prev-tab.on { color: var(--teal); }
+  .prev main { padding-bottom: 70px; }            /* clear the fixed tab bar */
+  .prev-c { padding: 0 18px; }
+  .prev-header .wm { display: none; }      /* logo-only header on mobile (avoids crowding the buttons) */
+  .prev-section { padding: 30px 0; }
+  /* compare table scrolls horizontally instead of squashing the columns */
+  .prev-ctable { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .prev-chead, .prev-ccell { min-width: 104px; }
+  .prev-clabel { position: sticky; left: 0; z-index: 1; background: #FAFBF7; }
+}

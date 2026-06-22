@@ -3,6 +3,7 @@ import { Poppins } from 'next/font/google'
 import './preview.css'
 import PrevHeader from './components/PrevHeader'
 import PrevFooter from './components/PrevFooter'
+import PrevTabBar from './components/PrevTabBar'
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -20,6 +21,7 @@ export default function PreviewLayout({ children }: { children: React.ReactNode 
       <PrevHeader />
       <main>{children}</main>
       <PrevFooter />
+      <PrevTabBar />
     </div>
   )
 }
