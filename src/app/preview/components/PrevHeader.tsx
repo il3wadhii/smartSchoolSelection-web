@@ -28,9 +28,9 @@ export default function PrevHeader() {
               <User size={16} /> {user?.name ? user.name.split(' ')[0] : 'Account'}
             </Link>
           ) : (
-            <Link href="/login?next=/preview" className="prev-signin">Sign in</Link>
+            <Link href="/preview/login" className="prev-signin">Sign in</Link>
           )}
-          <Link href="/signup?next=/preview" className="btnT">Get started</Link>
+          <Link href="/preview/signup" className="btnT">Get started</Link>
         </div>
       </div>
     </header>

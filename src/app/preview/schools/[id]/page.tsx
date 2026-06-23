@@ -108,7 +108,7 @@ export default function PreviewSchoolDetail() {
               <b>Sign in to see fees &amp; available seats</b>
               <p>Annual fees by grade and live open seats are free for parents — just create an account.</p>
             </div>
-            <Link href={`/login?next=/preview/schools/${school.schoolID}`} className="btnT">Sign in</Link>
+            <Link href={`/preview/login?next=/preview/schools/${school.schoolID}`} className="btnT">Sign in</Link>
           </div>
         )}
 

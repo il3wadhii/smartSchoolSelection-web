@@ -301,3 +301,8 @@
   .prev-chead, .prev-ccell { min-width: 104px; }
   .prev-clabel { position: sticky; left: 0; z-index: 1; background: #FAFBF7; }
 }
+
+/* ── Auth (login / signup) ─────────────────────────────── */
+.prev-authcard { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 26px; box-shadow: 0 10px 30px rgba(20,94,81,.06); }
+.prev-flabel { display: block; font-family: var(--font-poppins); font-weight: 700; font-size: 13px; color: var(--ink); margin-bottom: 6px; }
+.prev-autherr { background: #FDECEC; border: 1px solid #F3C0C0; color: #A32D2D; font-size: 13px; font-weight: 600; padding: 10px 13px; border-radius: 12px; margin-bottom: 14px; }

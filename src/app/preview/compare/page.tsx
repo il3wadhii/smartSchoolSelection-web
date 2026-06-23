@@ -141,7 +141,7 @@ export default function PreviewCompare() {
           <div className="prev-stub" style={{ padding: '40px 0' }}>
             <h3 className="ff" style={{ fontSize: 18, fontWeight: 700 }}>Log in to compare fees</h3>
             <p className="prev-sub">Comparing fees side by side is a free member feature.</p>
-            <Link href="/login?next=/preview/compare" className="btnT">Log in</Link>
+            <Link href="/preview/login?next=/preview/compare" className="btnT">Log in</Link>
           </div>
         ) : error ? (
           <div className="prev-stub" style={{ padding: '40px 0', color: 'var(--muted)', fontWeight: 600 }}>{error}</div>
