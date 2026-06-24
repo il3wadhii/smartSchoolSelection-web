@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Poppins } from 'next/font/google'
 import './preview.css'
+import PrevPortalBar from './components/PrevPortalBar'
 import PrevHeader from './components/PrevHeader'
 import PrevFooter from './components/PrevFooter'
 import PrevTabBar from './components/PrevTabBar'
@@ -18,6 +19,7 @@ export const metadata: Metadata = {
 export default function PreviewLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className={`prev ${poppins.variable}`}>
+      <PrevPortalBar />
       <PrevHeader />
       <main>{children}</main>
       <PrevFooter />

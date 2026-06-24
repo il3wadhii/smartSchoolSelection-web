@@ -306,3 +306,16 @@
 .prev-authcard { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 26px; box-shadow: 0 10px 30px rgba(20,94,81,.06); }
 .prev-flabel { display: block; font-family: var(--font-poppins); font-weight: 700; font-size: 13px; color: var(--ink); margin-bottom: 6px; }
 .prev-autherr { background: #FDECEC; border: 1px solid #F3C0C0; color: #A32D2D; font-size: 13px; font-weight: 600; padding: 10px 13px; border-radius: 12px; margin-bottom: 14px; }
+
+/* ── Portal switcher bar (slim strip above the header) ─────────────── */
+.prev-portalbar { background: var(--ink); }
+.prev-portalbar .row { display: flex; align-items: center; justify-content: space-between; height: 38px; }
+.prev-portalbar .lbl { font-family: var(--font-poppins); font-weight: 700; font-size: 11px; letter-spacing: 1px; color: rgba(255,255,255,.5); text-transform: uppercase; }
+.prev-portalbar .tabs { display: inline-flex; gap: 4px; }
+.prev-portalbar .ptab { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-poppins); font-weight: 700; font-size: 12.5px; color: rgba(255,255,255,.72); padding: 5px 13px; border-radius: 8px; transition: background .15s, color .15s; }
+.prev-portalbar a.ptab:hover { color: #fff; background: rgba(255,255,255,.12); }
+.prev-portalbar .ptab.on { background: var(--teal); color: #fff; cursor: default; }
+@media (max-width: 860px) {
+  .prev-portalbar .lbl { display: none; }
+  .prev-portalbar .row { justify-content: center; height: 36px; }
+}
