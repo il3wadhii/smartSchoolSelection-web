@@ -7,6 +7,7 @@ import { School } from '@/types'
 import { matchesGradeFilter, GradeFilterKey, GRADE_CHIPS } from '@/lib/stages'
 import PartnerMarquee from './components/PartnerMarquee'
 import PrevSchoolCard from './components/PrevSchoolCard'
+import LogoCycler from './components/LogoCycler'
 import {
   Map as MapIcon, Scale, Wallet, Star, ArrowUpRight, ArrowRight,
   GraduationCap, Search, Check,
@@ -100,32 +101,8 @@ export default function PreviewHome() {
 
           <div className="prev-heroart prev-rise">
             <div className="prev-panel">
-              <div className="prev-logocard">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logo.png" alt="Smart School Selection" />
-                <span>Smart School<i>SELECTION</i></span>
-              </div>
-              <svg width="100%" viewBox="0 0 300 230" aria-hidden="true">
-                <rect x="16" y="26" width="180" height="110" rx="12" fill="#14705F" />
-                <rect x="16" y="26" width="180" height="110" rx="12" fill="none" stroke="#7FD3BF" strokeWidth="2.5" strokeDasharray="6 7" />
-                <text x="40" y="72" fill="#CFEFE6" fontFamily="Poppins" fontWeight="800" fontSize="26">A B C</text>
-                <text x="50" y="108" fill="#9FE1CB" fontFamily="Poppins" fontWeight="700" fontSize="20">1  2  3</text>
-                <text x="128" y="130" fill="#7FD3BF" fontFamily="Poppins" fontWeight="700" fontSize="15">+ − ×</text>
-                <ellipse cx="208" cy="212" rx="80" ry="11" fill="#14705F" />
-                <rect x="150" y="188" width="120" height="20" rx="4" fill="#F4961E" /><rect x="150" y="188" width="7" height="20" fill="#D77E0C" />
-                <rect x="160" y="170" width="104" height="20" rx="4" fill="#ffffff" /><rect x="160" y="170" width="7" height="20" fill="#cfd8d3" />
-                <rect x="155" y="152" width="112" height="20" rx="4" fill="#E24B4A" /><rect x="155" y="152" width="7" height="20" fill="#A32D2D" />
-                <path d="M210 110 L252 126 L210 142 L168 126 Z" fill="#20303C" />
-                <path d="M188 132 l22 8 22 -8 v9 q-22 10 -44 0 z" fill="#2b3a47" />
-                <circle cx="210" cy="126" r="4" fill="#F4961E" />
-                <line x1="252" y1="126" x2="252" y2="147" stroke="#F4961E" strokeWidth="2.5" /><circle cx="252" cy="149" r="4" fill="#F4961E" />
-                <path d="M262 48 a12 12 0 0 1 12 12 c0 9 -12 21 -12 21 c0 0 -12 -12 -12 -21 a12 12 0 0 1 12 -12 z" fill="#F4961E" /><circle cx="262" cy="60" r="4.5" fill="#fff" />
-                <path d="M40 140 a9 9 0 0 1 9 9 c0 7 -9 16 -9 16 c0 0 -9 -9 -9 -16 a9 9 0 0 1 9 -9 z" fill="#0F6E56" /><circle cx="40" cy="149" r="3.5" fill="#fff" />
-                <g stroke="#F4961E" strokeWidth="3" strokeLinecap="round"><line x1="60" y1="150" x2="60" y2="162" /><line x1="54" y1="156" x2="66" y2="156" /></g>
-                <path d="M250 96 l2.5 6 6 2.5 -6 2.5 -2.5 6 -2.5 -6 -6 -2.5 6 -2.5 z" fill="#fff" />
-              </svg>
+              <LogoCycler schools={schools} />
             </div>
-            <div className="prev-fstat"><b>4.8</b><small>avg parent<br />rating</small></div>
           </div>
         </div>
       </section>

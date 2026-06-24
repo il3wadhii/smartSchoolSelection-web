@@ -4,7 +4,6 @@ import './preview.css'
 import PrevPortalBar from './components/PrevPortalBar'
 import PrevHeader from './components/PrevHeader'
 import PrevFooter from './components/PrevFooter'
-import PrevTabBar from './components/PrevTabBar'
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -23,7 +22,6 @@ export default function PreviewLayout({ children }: { children: React.ReactNode 
       <PrevHeader />
       <main>{children}</main>
       <PrevFooter />
-      <PrevTabBar />
     </div>
   )
 }
