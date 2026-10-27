@@ -11,6 +11,9 @@ function resolveApiUrl(): string {
   if (typeof window === 'undefined') {
     return envUrl || ''
   }
+  // An explicit NEXT_PUBLIC_API_URL always wins — even on localhost — so local
+  // dev can be pointed at the production API (https://api.smartschoolselection.cloud).
+  if (envUrl) return envUrl
   const host = window.location.hostname
   const isLocalOrLan =
     host === 'localhost' ||
