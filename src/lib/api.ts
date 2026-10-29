@@ -105,8 +105,10 @@ export const authAPI = {
     return response.data
   },
 
-  updatePassword: async (email: string, newPassword: string): Promise<ApiResponse> => {
-    const response = await api.post('/api/auth/update-password', { email, newPassword })
+  // Requires the reset `token` from the emailed link — the API rejects requests
+  // without a valid token (guards against account takeover).
+  updatePassword: async (email: string, token: string, newPassword: string): Promise<ApiResponse> => {
+    const response = await api.post('/api/auth/update-password', { email, token, newPassword })
     return response.data
   },
 }

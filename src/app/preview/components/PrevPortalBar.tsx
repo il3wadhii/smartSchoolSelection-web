@@ -3,10 +3,10 @@
 import { GraduationCap, School, ShieldCheck } from 'lucide-react'
 
 // Slim portal switcher that sits above the parent-site header. Parents is the
-// current site; Schools / Admin open the other two portals. In production these
-// become subdomains of smartschoolselection.cloud; in dev they're the local ports.
-const SCHOOLS_URL = 'http://localhost:3002'
-const ADMIN_URL = 'http://localhost:3000'
+// current site; Schools / Admin open the other two portals. URLs come from the
+// environment (.env.production for the live site); defaults are the dev ports.
+const SCHOOLS_URL = process.env.NEXT_PUBLIC_SCHOOLS_URL || 'http://localhost:3002'
+const ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3000'
 
 export default function PrevPortalBar() {
   return (

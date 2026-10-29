@@ -58,7 +58,7 @@ function SignupInner() {
       <div className="prev-c" style={{ maxWidth: 460 }}>
         <div style={{ textAlign: 'center', marginBottom: 18 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Smart School Selection" style={{ width: 56, height: 56, borderRadius: 14, margin: '0 auto 12px' }} />
+          <img src="/logo.png?v=2" alt="Smart School Selection" style={{ width: 56, height: 56, borderRadius: 14, margin: '0 auto 12px' }} />
           <h1 className="prev-h2" style={{ margin: 0 }}>Create your <span className="u">free account</span></h1>
           <p style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 700, color: 'var(--oranged)', background: 'var(--otint)', padding: '6px 13px', borderRadius: 20, marginTop: 10 }}>
             <Sparkles size={15} /> Unlock fees &amp; live seat availability

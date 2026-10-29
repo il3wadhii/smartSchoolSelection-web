@@ -7,15 +7,39 @@ import { School } from '@/types'
 import { matchesGradeFilter, GradeFilterKey, GRADE_CHIPS } from '@/lib/stages'
 import PartnerMarquee from './components/PartnerMarquee'
 import PrevSchoolCard from './components/PrevSchoolCard'
-import LogoCycler from './components/LogoCycler'
+import OrbitStage from './components/OrbitStage'
 import {
   Map as MapIcon, Scale, Wallet, Star, ArrowUpRight, ArrowRight,
-  GraduationCap, Search, Check,
+  GraduationCap, Search, Check, MapPin, HandCoins,
 } from 'lucide-react'
 
 function initials(name: string) {
   return name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase()
 }
+
+// Eased count-up for the hero stats; snaps straight to the target when the
+// user prefers reduced motion.
+function useCountUp(target: number, ms = 1400) {
+  const [n, setN] = useState(0)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setN(target)
+      return
+    }
+    let raf = 0
+    const t0 = performance.now()
+    const tick = (t: number) => {
+      const p = Math.min(1, (t - t0) / ms)
+      setN(Math.round(target * (1 - Math.pow(1 - p, 3))))
+      if (p < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [target, ms])
+  return n
+}
+
+const H1_WORDS = ['The', 'smart', 'way', 'to', 'find', 'the']
 
 const REVIEWS = [
   { n: 'Noura A.', a: 'Parent in Salmiya', t: 'I compared 6 schools and their fees in one evening. Saved me weeks of phone calls.' },
@@ -70,38 +94,56 @@ export default function PreviewHome() {
     [schools, search, grade, seatsOnly]
   )
 
+  const nSchools = useCountUp(totals?.schools ?? 39)
+  const nReviews = useCountUp(totals?.reviews ?? 210)
+  const nStages = useCountUp(5)
+  const nFree = useCountUp(100)
+
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="prev-hero">
-        <div className="prev-c grid">
-          <div className="prev-rise">
-            <p className="prev-eyebrow">Kuwait&apos;s school finder</p>
-            <h1 className="prev-title">
-              Find the{' '}
-              <span className="hl">
-                best school
-                <svg viewBox="0 0 200 11" preserveAspectRatio="none"><path d="M3 7 Q90 1 197 6" stroke="#F4961E" strokeWidth="5" fill="none" strokeLinecap="round" /></svg>
-              </span>
-              <br />for your child
+        <div className="prev-c">
+          <div className="prev-show home">
+            <OrbitStage schools={schools} />
+
+            <h1 className="prev-show-h1">
+              {H1_WORDS.map((w, i) => (
+                <span key={i} className="w" style={{ ['--i' as never]: i }}>{w}&nbsp;</span>
+              ))}
+              <span className="w hl" style={{ ['--i' as never]: H1_WORDS.length }}>best school</span>
+              <span className="w" style={{ ['--i' as never]: H1_WORDS.length + 1 }}>&nbsp;in Kuwait</span>
             </h1>
-            <p className="prev-lead">
-              Compare every preschool, KG and school in Kuwait — fees, curriculum, live seats and
-              real parent reviews. Free for parents.
+            <p className="prev-show-sub">
+              Every preschool, KG and school — fees, curricula, live seats and real parent reviews. In one place.
             </p>
-            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+
+            <div className="prev-show-stats">
+              <div className="st" style={{ ['--i' as never]: 0 }}>
+                <span className="ic"><GraduationCap size={20} /></span>
+                <b>{nSchools}+</b><small>schools listed</small>
+              </div>
+              <div className="st" style={{ ['--i' as never]: 1 }}>
+                <span className="ic" style={{ background: 'var(--otint)', color: 'var(--oranged)' }}><Star size={20} /></span>
+                {totals && totals.reviews < 25 ? (
+                  <><b><Check size={24} strokeWidth={3.5} style={{ verticalAlign: '-2px' }} /></b><small>real parent reviews</small></>
+                ) : (
+                  <><b>{nReviews}+</b><small>parent reviews</small></>
+                )}
+              </div>
+              <div className="st" style={{ ['--i' as never]: 2 }}>
+                <span className="ic"><MapPin size={20} /></span>
+                <b>{nStages}</b><small>stages covered</small>
+              </div>
+              <div className="st" style={{ ['--i' as never]: 3 }}>
+                <span className="ic" style={{ background: 'var(--otint)', color: 'var(--oranged)' }}><HandCoins size={20} /></span>
+                <b>{nFree}%</b><small>free for parents</small>
+              </div>
+            </div>
+
+            <div className="prev-show-cta">
               <Link href="#schools" className="btnO">Find schools <ArrowRight size={18} /></Link>
               <Link href="/preview/map" className="btnGhost"><MapIcon size={17} /> Explore the map</Link>
-            </div>
-            <div className="prev-herocards">
-              <div className="prev-mini"><span className="ic"><Star size={18} /></span><div><small>Top rated</small><b>{totals?.reviews ?? '210'}+ reviews</b></div></div>
-              <div className="prev-mini"><span className="ic" style={{ background: 'var(--otint)', color: 'var(--oranged)' }}><GraduationCap size={18} /></span><div><small>Listed &amp; verified</small><b>{totals?.schools ?? '39'}+ schools</b></div></div>
-            </div>
-          </div>
-
-          <div className="prev-heroart prev-rise">
-            <div className="prev-panel">
-              <LogoCycler schools={schools} />
             </div>
           </div>
         </div>
@@ -113,18 +155,21 @@ export default function PreviewHome() {
           <h2 className="prev-h2">An <span className="u">easier way</span> to choose a school</h2>
           <div className="prev-grid3">
             <Link href="/preview/map" className="prev-fcard">
+              <span className="ghost" aria-hidden="true"><MapIcon size={150} /></span>
               <div className="prev-ficon" style={{ background: 'var(--ttint)', color: 'var(--teald)' }}><MapIcon size={24} /></div>
               <h3>Map</h3>
               <p>Explore every school on an interactive map and find what&apos;s near you.</p>
               <span className="prev-arrowc"><ArrowUpRight size={17} /></span>
             </Link>
             <Link href="/preview/compare" className="prev-fcard">
+              <span className="ghost" aria-hidden="true"><Scale size={150} /></span>
               <div className="prev-ficon" style={{ background: 'var(--otint)', color: 'var(--oranged)' }}><Scale size={24} /></div>
               <h3>Compare</h3>
               <p>Put 2–4 schools side by side and compare them grade by grade.</p>
               <span className="prev-arrowc"><ArrowUpRight size={17} /></span>
             </Link>
             <Link href="#schools" className="prev-fcard">
+              <span className="ghost" aria-hidden="true"><Wallet size={150} /></span>
               <div className="prev-ficon" style={{ background: 'var(--ttint)', color: 'var(--teald)' }}><Wallet size={24} /></div>
               <h3>Fees</h3>
               <p>See real annual fees by grade and live seat availability.</p>
@@ -189,7 +234,7 @@ export default function PreviewHome() {
                 <path d="M214 100 a9 9 0 0 1 9 9 c0 7 -9 16 -9 16 c0 0 -9 -9 -9 -16 a9 9 0 0 1 9 -9 z" fill="#F4961E" /><circle cx="214" cy="109" r="3.5" fill="#fff" />
               </svg>
             </div>
-            <div className="prev-bstat" style={{ background: 'var(--orange)', color: '#3a2305' }}><b>{totals?.schools ?? 39}+</b><span>schools listed</span></div>
+            <div className="prev-bstat" style={{ background: 'var(--orange)', color: '#3a2305' }}><b>{totals?.schools ?? 39}</b><span>schools listed</span></div>
             <div className="prev-bstat" style={{ background: 'var(--teal)' }}><b>100%</b><span>free for parents</span></div>
             <div className="prev-bstat" style={{ background: 'var(--teald)', gridColumn: 'span 2' }}><b>Live</b><span>seats &amp; fees, updated by the schools themselves</span></div>
           </div>
@@ -219,7 +264,7 @@ export default function PreviewHome() {
       <section className="prev-section">
         <div className="prev-c">
           <h2 className="prev-h2">Our <span className="u">partner schools</span></h2>
-          <p className="prev-sub">{totals?.schools ?? 39}+ schools keep their fees and seats up to date with us.</p>
+          <p className="prev-sub">{totals?.schools ?? 39} schools keep their fees and seats up to date with us.</p>
         </div>
         {!loading && <PartnerMarquee schools={schools} />}
       </section>

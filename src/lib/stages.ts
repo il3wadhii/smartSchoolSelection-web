@@ -31,13 +31,13 @@ const stageOrder = (stage: string): number => {
 }
 
 // Bucket spans on the order scale: nur [0,0], kg [1,2], pri [3,7] (G1–5),
-// int [8,11] (G6–9), high [12,14] (G10–12)
+// int [8,11] (G6–9), high [12,15] (G10–13 — British schools have Year 13)
 const BUCKETS: Record<StageKey, [number, number]> = {
   nur: [0, 0],
   kg: [1, 2],
   pri: [3, 7],
   int: [8, 11],
-  high: [12, 14],
+  high: [12, 15],
 }
 
 export function schoolStages(educationalStage: string | null | undefined): StageKey[] {
@@ -167,6 +167,7 @@ export const EXACT_GRADES = [
   'KG1', 'KG2',
   'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6',
   'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12',
+  'Grade 13', // British Year 13 (A-levels) — real fee rows exist for it
 ]
 
 // Grade-range filter chips for the finder ("My child is in…").
@@ -186,7 +187,7 @@ const FILTER_SPANS: Record<GradeFilterKey, [number, number]> = {
   kg: [1, 2],
   g1_5: [3, 7],   // Grade 1–5
   g6_9: [8, 11],  // Grade 6–9
-  g10_12: [12, 14], // Grade 10–12
+  g10_12: [12, 15], // Grade 10–13 (incl. British Year 13)
 }
 
 // Does the school's stage range overlap the selected grade-range filter?

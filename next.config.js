@@ -8,6 +8,10 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
+  // The live parents site is the /preview design (Orbit hero). Bare / goes there.
+  async redirects() {
+    return [{ source: '/', destination: '/preview', permanent: false }]
+  },
   async rewrites() {
     return [
       { source: '/api/:path*', destination: `${API_PROXY}/api/:path*` },

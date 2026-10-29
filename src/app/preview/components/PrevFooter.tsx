@@ -7,7 +7,7 @@ export default function PrevFooter() {
       <div className="prev-c frow">
         <Link href="/preview" className="prev-brand">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Smart School Selection logo" style={{ height: 34, width: 34 }} />
+          <img src="/logo.png?v=2" alt="Smart School Selection logo" style={{ height: 34, width: 34 }} />
           <span className="wm" style={{ fontSize: 15 }}>Smart School Selection</span>
         </Link>
         <span className="muted">© 2026 Smart School Selection · Kuwait</span>

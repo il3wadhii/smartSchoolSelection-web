@@ -5,9 +5,14 @@ import { User } from '@/types'
 // user_* cookie names so the two sites never clash.
 export const auth = {
   setAuth: (token: string, user: User) => {
+    // `secure` must follow the ACTUAL page protocol, not the build mode:
+    // browsers drop secure cookies served over plain HTTP, which would silently
+    // discard the login token (the site currently runs on http://, no SSL yet).
+    // This stays false on http and auto-tightens to true once HTTPS is added.
+    const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:'
     const options = {
       expires: 30,
-      secure: process.env.NODE_ENV === 'production',
+      secure: isHttps,
       sameSite: 'strict' as const,
     }
     Cookies.set('user_token', token, options)

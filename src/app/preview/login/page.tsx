@@ -50,7 +50,7 @@ function LoginInner() {
       <div className="prev-c" style={{ maxWidth: 440 }}>
         <div style={{ textAlign: 'center', marginBottom: 18 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Smart School Selection" style={{ width: 56, height: 56, borderRadius: 14, margin: '0 auto 12px' }} />
+          <img src="/logo.png?v=2" alt="Smart School Selection" style={{ width: 56, height: 56, borderRadius: 14, margin: '0 auto 12px' }} />
           <h1 className="prev-h2" style={{ margin: 0 }}>Welcome <span className="u">back</span></h1>
           <p className="prev-sub" style={{ margin: '6px auto 0' }}>Sign in to see fees, live seats and save your shortlist.</p>
         </div>

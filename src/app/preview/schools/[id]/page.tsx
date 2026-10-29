@@ -3,18 +3,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
 import { schoolsAPI, getImageUrl } from '@/lib/api'
 import { SchoolDetails, Rating } from '@/types'
 import { schoolStages, STAGE_LABEL, StageKey, stageGradeGroups } from '@/lib/stages'
 import SaveHeart from '../../components/SaveHeart'
 import { useAuth } from '@/contexts/AuthContext'
-import { ArrowLeft, MapPin, Phone, Globe, Scale, Lock, ChevronDown, Star } from 'lucide-react'
-
-const SchoolMap = dynamic(() => import('@/components/SchoolMap'), {
-  ssr: false,
-  loading: () => <div className="prev-mapwrap" style={{ background: 'var(--ttint)' }} />,
-})
+import { ArrowLeft, MapPin, Phone, Globe, Scale, Lock, ChevronDown, Star, Navigation } from 'lucide-react'
 
 const STAGE_DOT: Record<StageKey, string> = {
   nur: '#F4961E', kg: '#5DCAA5', pri: '#1F8A78', int: '#3E7CB1', high: '#155E51',
@@ -96,7 +90,6 @@ export default function PreviewSchoolDetail() {
   const lat = (school as any).latitude ?? school.location?.latitude
   const lng = (school as any).longitude ?? school.location?.longitude
   const hasCoords = typeof lat === 'number' && typeof lng === 'number'
-  const mapSchools = hasCoords ? [{ ...school, location: { latitude: lat, longitude: lng } } as any] : []
 
   return (
     <section className="prev-section" style={{ paddingTop: 22 }}>
@@ -173,8 +166,27 @@ export default function PreviewSchoolDetail() {
         {tab === 'location' && (
           hasCoords ? (
             <div className="prev-card" style={{ padding: 0, overflow: 'hidden' }}>
-              <div className="prev-mapwrap"><SchoolMap schools={mapSchools} selectedId={school.schoolID} onSelect={() => {}} onOpen={() => {}} onBoundsChange={() => {}} userLocation={null} /></div>
-              <div className="prev-kv" style={{ padding: '14px 18px' }}><span className="k">Address</span><span className="v">{school.address || '—'}</span></div>
+              <div className="prev-mapwrap" style={{ height: 380 }}>
+                <iframe
+                  title={`Map of ${school.schoolName}`}
+                  src={`https://www.google.com/maps?q=${lat},${lng}&z=15&hl=en&output=embed`}
+                  style={{ border: 0, width: '100%', height: '100%', display: 'block' }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+              </div>
+              <div className="prev-locfoot">
+                <div className="addr"><span className="k">Address</span><span className="v">{school.address || '—'}</span></div>
+                <a
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="prev-dirbtn"
+                >
+                  <Navigation size={16} /> Direction
+                </a>
+              </div>
             </div>
           ) : (
             <div className="prev-card" style={{ textAlign: 'center', color: 'var(--muted)', fontWeight: 600 }}>Location not available for this school.</div>

@@ -24,7 +24,7 @@ function SchoolsTable({ schools, grade }: { schools: AssistantSchool[]; grade?: 
   const feeCell = (s: AssistantSchool) => {
     if (!isAuthenticated) {
       return (
-        <Link href="/signup" className="inline-flex items-center gap-1 text-primary-600 hover:underline">
+        <Link href="/login" className="inline-flex items-center gap-1 text-primary-600 hover:underline">
           <Lock className="h-3 w-3" /> Account
         </Link>
       )
@@ -37,7 +37,7 @@ function SchoolsTable({ schools, grade }: { schools: AssistantSchool[]; grade?: 
   const seatCell = (s: AssistantSchool) => {
     if (!isAuthenticated) {
       return (
-        <Link href="/signup" className="inline-flex items-center gap-1 text-primary-600 hover:underline">
+        <Link href="/login" className="inline-flex items-center gap-1 text-primary-600 hover:underline">
           <Lock className="h-3 w-3" /> Account
         </Link>
       )
