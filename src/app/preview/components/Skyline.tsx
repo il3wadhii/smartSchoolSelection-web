@@ -64,14 +64,21 @@ function drawCity(c: Ctx, w: number, base: number, H: number, t: Theme) {
   { const r = rnd(3); c.fillStyle = t.far; let x = -20; while (x < w + 20) { const bw = 30 + r() * 70, bh = (.10 + r() * .36) * H * .75; c.fillRect(x, base - bh, bw, bh); x += bw + 4 + r() * 14 } }
   // mid layer: generic towers + mosque, spaced to leave the centre (Orbit) calmer
   { const r = rnd(17); let x = -10; while (x < w + 10) { const bw = 34 + r() * 56, bh = (.22 + r() * .26) * H * .75; const inCentre = x + bw > w * .36 && x < w * .64; const hh = inCentre ? bh * .55 : bh; solid(c, () => rect(c, x, base - hh, bw, hh), t.mid, t, x, x + bw); if (t.winOn) windows(c, x, base - hh, bw, hh, t, r, .45); x += bw + 8 + r() * 22 } }
-  grandMosque(c, w * .16, base, H * .36, t)
-  seifClock(c, w * .30, base, H * .30, t)
-  // the three landmarks on the waterfront, right of centre
-  liberation(c, w * .60, base, H * .96, t)
-  alHamra(c, w * .70, base, H * .80, t)
-  kuwaitTowers(c, w * .82, base, H * .70, t)
+  if (w < 700) {
+    // phones: only the two icons, sized to the width — Liberation Tower left of
+    // centre, the three Kuwait Towers on the right, nothing cropped
+    liberation(c, w * .28, base, Math.min(H * .9, w * 1.6), t)
+    kuwaitTowers(c, w * .52, base, Math.min(H * .6, w * .86), t)
+  } else {
+    grandMosque(c, w * .16, base, H * .36, t)
+    seifClock(c, w * .30, base, H * .30, t)
+    // the three landmarks on the waterfront, right of centre
+    liberation(c, w * .60, base, H * .96, t)
+    alHamra(c, w * .70, base, H * .80, t)
+    kuwaitTowers(c, w * .82, base, H * .70, t)
+  }
   // water band the towers stand beside
-  { const sg = c.createLinearGradient(0, base - 42, 0, base - 6); sg.addColorStop(0, t.sea[0]); sg.addColorStop(1, t.sea[1]); c.fillStyle = sg; c.fillRect(w * .5, base - 42, w * .5, 36) }
+  { const sg = c.createLinearGradient(0, base - 42, 0, base - 6); sg.addColorStop(0, t.sea[0]); sg.addColorStop(1, t.sea[1]); c.fillStyle = sg; c.fillRect(w < 700 ? w * .42 : w * .5, base - 42, w, 36) }
   schools(c, w, base, t)
   c.fillStyle = t.ground; c.fillRect(0, base - 6, w, 6)
 }
