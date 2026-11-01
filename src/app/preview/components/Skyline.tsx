@@ -67,11 +67,11 @@ function drawCity(c: Ctx, w: number, base: number, H: number, t: Theme) {
   if (w < 700) {
     // phones: only the two icons, sized to the width — Liberation Tower left of
     // centre, the three Kuwait Towers on the right, nothing cropped
+    { const r = rnd(29); let x = -6; while (x < w * .45) { const bw = 26 + r() * 34, bh = (.1 + r() * .14) * H; solid(c, () => rect(c, x, base - bh, bw, bh), t.mid, t, x, x + bw); if (t.winOn) windows(c, x, base - bh, bw, bh, t, r, .4); x += bw + 6 + r() * 10 } }
     liberation(c, w * .28, base, Math.min(H * .9, w * 1.6), t)
     kuwaitTowers(c, w * .52, base, Math.min(H * .6, w * .86), t)
   } else {
     grandMosque(c, w * .16, base, H * .36, t)
-    seifClock(c, w * .30, base, H * .30, t)
     // the three landmarks on the waterfront, right of centre
     liberation(c, w * .60, base, H * .96, t)
     alHamra(c, w * .70, base, H * .80, t)
@@ -212,15 +212,6 @@ function grandMosque(c: Ctx, x: number, base: number, H: number, t: Theme) {
   c.fillStyle = t.mid; c.fillRect(mx - H * .04, base - H * .66, H * .08, 5); c.fillRect(mx - H * .03, base - H * .82, H * .06, 4)
   c.beginPath(); c.arc(mx, base - H * .95, H * .03, 0, Math.PI * 2); c.fill(); c.fillRect(mx - .8, base - H, 1.6, H * .05)
   if (t.winOn) { c.fillStyle = t.win; c.globalAlpha = .8; for (let xx = x - W / 2 + 8; xx < x + W / 2 - 8; xx += 14) c.fillRect(xx, base - H * .24, 4, 9); c.globalAlpha = 1 }
-}
-
-/* Seif Palace clock tower: square shaft, the blue-tiled top, four clock faces. */
-function seifClock(c: Ctx, x: number, base: number, H: number, t: Theme) {
-  const W = H * .14
-  solid(c, () => rect(c, x - W, base - H * .8, W * 2, H * .8), t.mid, t, x - W, x + W)
-  solid(c, () => { c.moveTo(x - W * 1.25, base - H * .8); c.lineTo(x + W * 1.25, base - H * .8); c.lineTo(x, base - H) }, t.mid, t, x - W * 1.25, x + W * 1.25)
-  c.beginPath(); c.arc(x, base - H * .68, W * .55, 0, Math.PI * 2); c.fillStyle = t.winOn ? t.win : 'rgba(255,255,255,.5)'; c.fill()
-  c.strokeStyle = t.mid; c.lineWidth = 1.2; c.beginPath(); c.moveTo(x, base - H * .68); c.lineTo(x, base - H * .68 - W * .4); c.moveTo(x, base - H * .68); c.lineTo(x + W * .3, base - H * .68); c.stroke()
 }
 
 function schools(c: Ctx, w: number, base: number, t: Theme) {
