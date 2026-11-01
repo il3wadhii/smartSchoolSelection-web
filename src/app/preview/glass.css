@@ -59,6 +59,7 @@
 .prev[data-look] .prev-footer > .prev-c { border-radius: 24px; padding: 4px 28px; }
 @media (max-width: 700px) {
   .prev[data-look] .prev-hero { padding: 96px 0 40px; }
+  .prev[data-look] .prev-show-logoWrap::before { inset: -10px; }
   .prev[data-look] .prev-section > .prev-c { border-radius: 20px; padding: 26px 16px; }
   .prev[data-look] .prev-footer > .prev-c { border-radius: 18px; padding: 4px 16px; }
   .prev-lookswitch { left: 10px; bottom: 10px; padding-left: 10px; font-size: 11px; }

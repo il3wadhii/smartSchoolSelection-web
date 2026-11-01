@@ -514,10 +514,11 @@
 @keyframes prevDrift { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(14px, -12px); } }
 
 @media (max-width: 700px) {
-  .prev-show-stage { --stage: 330px; --r1: 92px; --r2: 142px; }
-  .prev-show-stage .sat { margin: -21px 0 0 -21px; }
-  .prev-show-stage .tile { width: 42px; height: 42px; }
-  .prev-show-logo { width: 108px; height: 108px; margin: -54px 0 0 -54px; }
+  /* phones: smaller centre logo and both rings pushed out past it, so no tile sits on the logo */
+  .prev-show-stage { --stage: 344px; --r1: 104px; --r2: 150px; }
+  .prev-show-stage .sat { margin: -20px 0 0 -20px; }
+  .prev-show-stage .tile { width: 40px; height: 40px; }
+  .prev-show-logoWrap { width: 104px; height: 104px; margin: -52px 0 0 -52px; }
   .prev-show-stats { grid-template-columns: repeat(2, 1fr); }
 }
 
