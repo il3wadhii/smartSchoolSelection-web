@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function PreviewLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className={`prev ${poppins.variable}`} data-look="day">
+    <div className={`prev ${poppins.variable}`} data-look="day" suppressHydrationWarning>
       {/* picks day/night before first paint (saved choice, ?theme=, or the clock) */}
       <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
       <Skyline />
