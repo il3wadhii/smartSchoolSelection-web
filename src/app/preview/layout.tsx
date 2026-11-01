@@ -7,6 +7,7 @@ import PrevHeader from './components/PrevHeader'
 import PrevFooter from './components/PrevFooter'
 import PrevAssistant from './components/PrevAssistant'
 import LookSwitcher from './components/LookSwitcher'
+import Skyline from './components/Skyline'
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -21,6 +22,7 @@ export const metadata: Metadata = {
 export default function PreviewLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className={`prev ${poppins.variable}`}>
+      <Skyline />
       <PrevPortalBar />
       <PrevHeader />
       <main>{children}</main>

@@ -8,7 +8,6 @@ import { matchesGradeFilter, GradeFilterKey, GRADE_CHIPS } from '@/lib/stages'
 import PartnerMarquee from './components/PartnerMarquee'
 import PrevSchoolCard from './components/PrevSchoolCard'
 import OrbitStage from './components/OrbitStage'
-import Skyline from './components/Skyline'
 import {
   Map as MapIcon, Scale, Wallet, Star, ArrowUpRight, ArrowRight,
   GraduationCap, Search, Check, MapPin, HandCoins,
@@ -104,7 +103,6 @@ export default function PreviewHome() {
     <>
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="prev-hero">
-        <Skyline />
         <div className="prev-c">
           <div className="prev-show home">
             <OrbitStage schools={schools} />
