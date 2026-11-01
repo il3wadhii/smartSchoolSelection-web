@@ -64,7 +64,7 @@ function draw(canvas: HTMLCanvasElement, t: Theme) {
   grandMosque(c, w * .16, base, H * .36, t)
   seifClock(c, w * .30, base, H * .30, t)
   // the three landmarks on the waterfront, right of centre
-  liberation(c, w * .60, base, H * .88, t)
+  liberation(c, w * .60, base, H * .96, t)
   alHamra(c, w * .70, base, H * .80, t)
   kuwaitTowers(c, w * .82, base, H * .70, t)
   // water band the towers stand beside
@@ -118,48 +118,55 @@ function sphere(c: Ctx, x: number, y: number, r: number, t: Theme, big: boolean)
   c.restore()
 }
 
-/* Liberation Tower (1996, 372 m). Read from the real profile: a big stepped
-   base building, a slim concrete spike that tapers with a slight inward curve,
-   the observation complex at ~40 % that flares out from the shaft like an
-   inverted cone into a wide two-storey deck, a stack of narrowing tiled rings
-   above it, a few thin antenna platforms further up, and a long mast. */
+/* Liberation Tower (1996, 372 m), proportions taken from a photo of the real
+   tower, measured as fractions of the total height including the mast:
+     base podium 0–.06 · fluted shaft with a flared skirt · a flat lower
+     saucer at .42 · the main complex .49–.655 (inverted-cone flare, wide
+     two-level drum, narrower restaurant drum, conical roof) · three small
+     antenna discs .66–.72 · a long thin mast .72–1.0 with a thicker segment. */
 function liberation(c: Ctx, x: number, base: number, H: number, t: Theme) {
-  // stepped base building
-  solid(c, () => { c.moveTo(x - H * .13, base); c.lineTo(x + H * .13, base); c.lineTo(x + H * .10, base - H * .05); c.lineTo(x - H * .10, base - H * .05) }, t.near, t, x - H * .13, x + H * .13)
-  solid(c, () => { c.moveTo(x - H * .085, base - H * .05); c.lineTo(x + H * .085, base - H * .05); c.lineTo(x + H * .06, base - H * .095); c.lineTo(x - H * .06, base - H * .095) }, t.near, t, x - H * .085, x + H * .085)
-  if (t.winOn) { c.fillStyle = t.win; c.globalAlpha = .7; for (let xx = x - H * .09; xx < x + H * .09; xx += 9) { c.fillRect(xx, base - H * .035, 4, 5); c.fillRect(xx, base - H * .08, 4, 5) } c.globalAlpha = 1 }
-  // shaft: tapers from the base to the mast with a gentle concave profile
+  const f = (k: number) => base - H * k
+  // stepped podium building
+  solid(c, () => { c.moveTo(x - H * .14, base); c.lineTo(x + H * .14, base); c.lineTo(x + H * .11, f(.035)); c.lineTo(x - H * .11, f(.035)) }, t.near, t, x - H * .14, x + H * .14)
+  solid(c, () => { c.moveTo(x - H * .09, f(.035)); c.lineTo(x + H * .09, f(.035)); c.lineTo(x + H * .07, f(.06)); c.lineTo(x - H * .07, f(.06)) }, t.near, t, x - H * .09, x + H * .09)
+  if (t.winOn) { c.fillStyle = t.win; c.globalAlpha = .7; for (let xx = x - H * .1; xx < x + H * .1; xx += 8) { c.fillRect(xx, f(.022), 3.5, 4); c.fillRect(xx, f(.05), 3.5, 4) } c.globalAlpha = 1 }
+  // shaft: flared skirt at the foot, then a slow taper all the way to the complex
   const shaft = () => {
-    c.moveTo(x - H * .036, base - H * .095); c.lineTo(x + H * .036, base - H * .095)
-    c.quadraticCurveTo(x + H * .016, base - H * .45, x + H * .012, base - H * .74)
-    c.lineTo(x - H * .012, base - H * .74)
-    c.quadraticCurveTo(x - H * .016, base - H * .45, x - H * .036, base - H * .095)
+    c.moveTo(x - H * .05, f(.06)); c.lineTo(x + H * .05, f(.06))
+    c.quadraticCurveTo(x + H * .034, f(.12), x + H * .03, f(.2))
+    c.lineTo(x + H * .017, f(.62)); c.lineTo(x - H * .017, f(.62))
+    c.lineTo(x - H * .03, f(.2)); c.quadraticCurveTo(x - H * .034, f(.12), x - H * .05, f(.06))
   }
-  solid(c, shaft, t.near, t, x - H * .036, x + H * .036)
-  c.fillStyle = t.stone; for (let i = -1; i <= 1; i++) c.fillRect(x + i * H * .012 - .5, base - H * .72, 1, H * .6)
-  // observation complex: inverted cone flaring from the shaft into the wide deck
-  const deckY = base - H * .415, deckW = H * .085, deckH = H * .045
-  solid(c, () => { c.moveTo(x - H * .02, base - H * .355); c.lineTo(x + H * .02, base - H * .355); c.lineTo(x + deckW, deckY + deckH); c.lineTo(x - deckW, deckY + deckH) }, t.near, t, x - deckW, x + deckW)
-  solid(c, () => rect(c, x - deckW, deckY, deckW * 2, deckH), t.near, t, x - deckW, x + deckW)
-  // the deck's two storeys: a lit window band and the revolving restaurant band
-  if (t.winOn) { c.fillStyle = t.win; c.globalAlpha = .9; for (let xx = x - deckW + 3; xx < x + deckW - 3; xx += 5) { c.fillRect(xx, deckY + deckH * .18, 3, deckH * .22); c.fillRect(xx, deckY + deckH * .58, 3, deckH * .22) } c.globalAlpha = 1 }
-  else { c.fillStyle = t.stone; c.fillRect(x - deckW + 2, deckY + deckH * .3, deckW * 2 - 4, 1.5); c.fillRect(x - deckW + 2, deckY + deckH * .68, deckW * 2 - 4, 1.5) }
-  // stack of narrowing tiled rings above the deck
-  const tiers: [number, number][] = [[.066, .022], [.052, .02], [.04, .018], [.03, .016]]
-  let ty = deckY
-  for (const [tw, th] of tiers) {
-    const rw = H * tw, rh = H * th; ty -= rh
-    solid(c, () => rect(c, x - rw, ty, rw * 2, rh), t.near, t, x - rw, x + rw)
-    c.fillStyle = t.tile; c.globalAlpha = .9; c.fillRect(x - rw + 1, ty + rh * .35, rw * 2 - 2, 1.5); c.globalAlpha = 1
+  solid(c, shaft, t.near, t, x - H * .05, x + H * .05)
+  // fluting
+  c.fillStyle = t.stone; for (let i = -2; i <= 2; i++) { const k = i * .4; c.beginPath(); c.moveTo(x + k * H * .03 - .5, f(.2)); c.lineTo(x + k * H * .017 - .5, f(.49)); c.lineTo(x + k * H * .017 + .5, f(.49)); c.lineTo(x + k * H * .03 + .5, f(.2)); c.closePath(); c.fill() }
+  // lower saucer: a flat disc with a shallow sloped underside
+  const sw = H * .062
+  solid(c, () => { c.moveTo(x - H * .024, f(.405)); c.lineTo(x + H * .024, f(.405)); c.lineTo(x + sw, f(.425)); c.lineTo(x - sw, f(.425)) }, t.near, t, x - sw, x + sw)
+  solid(c, () => rect(c, x - sw, f(.445), sw * 2, H * .02), t.near, t, x - sw, x + sw)
+  c.fillStyle = t.winOn ? t.win : t.stone; c.globalAlpha = t.winOn ? .9 : 1; c.fillRect(x - sw + 2, f(.437), sw * 2 - 4, 1.5); c.globalAlpha = 1
+  // main complex
+  const dw = H * .053, rw = H * .042
+  solid(c, () => { c.moveTo(x - H * .017, f(.49)); c.lineTo(x + H * .017, f(.49)); c.lineTo(x + dw, f(.53)); c.lineTo(x - dw, f(.53)) }, t.near, t, x - dw, x + dw)   // inverted-cone flare
+  solid(c, () => rect(c, x - dw, f(.585), dw * 2, H * .055), t.near, t, x - dw, x + dw)                                                                                // two-level drum
+  solid(c, () => rect(c, x - rw, f(.63), rw * 2, H * .045), t.near, t, x - rw, x + rw)                                                                                 // restaurant drum
+  solid(c, () => { c.moveTo(x - rw, f(.63)); c.lineTo(x + rw, f(.63)); c.lineTo(x + H * .012, f(.655)); c.lineTo(x - H * .012, f(.655)) }, t.near, t, x - rw, x + rw)  // conical roof
+  // window bands on the drums (lit at night, light lines by day)
+  const band = (y: number, hw: number, h: number) => {
+    if (t.winOn) { c.fillStyle = t.win; c.globalAlpha = .9; for (let xx = x - hw + 3; xx < x + hw - 3; xx += 5) c.fillRect(xx, y, 3, h); c.globalAlpha = 1 }
+    else { c.fillStyle = t.stone; c.fillRect(x - hw + 2, y + h / 2, hw * 2 - 4, 1.5) }
   }
-  // antenna platforms up the spike
-  for (const [py, pw] of [[.60, .028], [.655, .024], [.71, .02]] as [number, number][]) {
-    solid(c, () => rect(c, x - H * pw, base - H * py, H * pw * 2, 3), t.near, t, x - H * pw, x + H * pw)
+  band(f(.575), dw, H * .012); band(f(.55), dw, H * .012); band(f(.615), rw, H * .012)
+  // antenna discs
+  for (const [k, hw] of [[.665, .03], [.69, .024], [.715, .018]] as [number, number][]) {
+    solid(c, () => rect(c, x - H * hw, f(k), H * hw * 2, H * .012), t.near, t, x - H * hw, x + H * hw)
   }
-  // mast: a thicker antenna cylinder, then the thin tip with the aviation light
-  solid(c, () => rect(c, x - H * .008, base - H * .86, H * .016, H * .12), t.near, t, x - H * .008, x + H * .008)
-  c.fillStyle = t.near; c.fillRect(x - 1.2, base - H, 2.4, H * .15)
-  c.beginPath(); c.arc(x, base - H * .985, 2.4, 0, Math.PI * 2); c.fillStyle = t.winOn ? '#FF6B6B' : t.near; c.fill()
+  // mast: long and thin, with a slightly thicker middle segment
+  c.fillStyle = t.near
+  c.beginPath(); c.moveTo(x - H * .006, f(.72)); c.lineTo(x + H * .006, f(.72)); c.lineTo(x + H * .002, f(1)); c.lineTo(x - H * .002, f(1)); c.closePath(); c.fill()
+  c.fillRect(x - H * .008, f(.88), H * .016, H * .12)
+  c.fillRect(x - H * .005, f(.9), H * .01, H * .02)
+  c.beginPath(); c.arc(x, f(.995), 2.2, 0, Math.PI * 2); c.fillStyle = t.winOn ? '#FF6B6B' : t.near; c.fill()
 }
 
 /* Al Hamra Tower (2011, 412 m): a tall limestone-and-glass slab whose south
