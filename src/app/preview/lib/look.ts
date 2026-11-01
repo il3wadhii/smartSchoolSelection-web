@@ -3,9 +3,10 @@
 //   dusk    — sunset skyline, light glass
 //   night   — night skyline, dark glass
 //   paper   — daylight paper-cut skyline, glass on the search only
+//   neon    — indigo night, glowing neon outlines, mirrored in water
 // Stored per browser; also settable with ?look=dusk|night|paper|current.
-export type Look = 'current' | 'dusk' | 'night' | 'paper'
-export const LOOKS: Look[] = ['current', 'dusk', 'night', 'paper']
+export type Look = 'current' | 'dusk' | 'night' | 'paper' | 'neon'
+export const LOOKS: Look[] = ['current', 'dusk', 'night', 'paper', 'neon']
 const KEY = 'ssc-look'
 const EVT = 'ssc-look-change'
 
