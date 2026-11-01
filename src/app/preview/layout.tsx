@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
 import { Poppins } from 'next/font/google'
 import './preview.css'
+import './glass.css'
 import PrevPortalBar from './components/PrevPortalBar'
 import PrevHeader from './components/PrevHeader'
 import PrevFooter from './components/PrevFooter'
 import PrevAssistant from './components/PrevAssistant'
+import LookSwitcher from './components/LookSwitcher'
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -24,6 +26,7 @@ export default function PreviewLayout({ children }: { children: React.ReactNode 
       <main>{children}</main>
       <PrevFooter />
       <PrevAssistant />
+      <LookSwitcher />
     </div>
   )
 }
