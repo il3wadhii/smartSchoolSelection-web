@@ -17,9 +17,10 @@ type Theme = {
   neon?: string[]  // glowing outline palette (neon look); also turns on the water reflection
 }
 const THEME: Record<Exclude<Look, 'current'>, Theme> = {
-  neon:  { sky: ['#0B0530', '#1B0D5C', '#2A1A7A', '#3A2390'], far: 'rgba(120,90,255,.10)', mid: '#140A44', near: '#0E0735', win: '#9FF6FF', winOn: .5, stars: 140, glow: 'rgba(255,63,164,.22)', ground: '#0A0528', paper: false,
-           rim: 'rgba(0,0,0,0)', tile: 'rgba(255,120,210,.85)', stone: 'rgba(255,255,255,.08)', sea: ['rgba(0,229,255,.12)', 'rgba(10,5,40,0)'],
-           neon: ['#00E5FF', '#FF3FA4', '#7CFF4F', '#FFB000', '#B36BFF', '#FF6A3D', '#4DFFC3'] },
+  // Neon look in the brand palette: navy → teal sky, teal glow on the buildings, orange accents only
+  neon:  { sky: ['#0A1A20', '#0F3038', '#155E51', '#1F8A78'], far: 'rgba(159,232,218,.08)', mid: '#0E2A2E', near: '#0A1F24', win: '#CFF5EC', winOn: .5, stars: 120, glow: 'rgba(244,150,30,.22)', ground: '#08181C', paper: false,
+           rim: 'rgba(0,0,0,0)', tile: 'rgba(255,211,154,.85)', stone: 'rgba(255,255,255,.08)', sea: ['rgba(47,208,180,.14)', 'rgba(8,24,28,0)'],
+           neon: ['#2FD0B4', '#F4961E', '#9FE8DA', '#FFD39A', '#5BC8B0', '#FFB45C', '#CFF5EC'] },
   dusk:  { sky: ['#0F4F56', '#1A8A8C', '#F2B37A', '#F08A3C'], far: 'rgba(20,70,78,.28)', mid: '#1E4A52', near: '#152F36', win: '#FFD39A', winOn: .55, stars: 0, glow: 'rgba(240,138,60,.35)', ground: '#10272D', paper: false,
            rim: 'rgba(255,196,130,.42)', tile: 'rgba(140,214,220,.55)', stone: 'rgba(244,222,190,.22)', sea: ['rgba(240,170,110,.35)', 'rgba(16,39,45,.0)'] },
   night: { sky: ['#040F13', '#07252C', '#0D3D46', '#13525B'], far: 'rgba(255,255,255,.05)', mid: '#0B2A31', near: '#06181D', win: '#FFD27A', winOn: .8, stars: 90, glow: 'rgba(240,138,60,.22)', ground: '#040F13', paper: false,
@@ -72,7 +73,7 @@ function draw(canvas: HTMLCanvasElement, t: Theme) {
   const base = reflect ? h - Math.min(h * .16, 150) : h
   const H = Math.min(base, 820)
   if (reflect) { // horizon haze behind the city
-    const hz = c.createLinearGradient(0, base - H * .5, 0, base); hz.addColorStop(0, 'rgba(255,63,164,0)'); hz.addColorStop(1, 'rgba(255,63,164,.18)')
+    const hz = c.createLinearGradient(0, base - H * .5, 0, base); hz.addColorStop(0, 'rgba(244,150,30,0)'); hz.addColorStop(1, 'rgba(244,150,30,.16)')
     c.fillStyle = hz; c.fillRect(0, base - H * .5, w, H * .5)
   }
   drawCity(c, w, base, H, t)
@@ -82,7 +83,7 @@ function draw(canvas: HTMLCanvasElement, t: Theme) {
     c.save(); c.beginPath(); c.rect(0, base, w, depth); c.clip()
     c.translate(0, base); c.scale(1, -(depth / (H * .55))); c.translate(0, -base)
     c.globalAlpha = .45; drawCity(c, w, base, H, t); c.restore()
-    const fade = c.createLinearGradient(0, base, 0, h); fade.addColorStop(0, 'rgba(11,5,48,.25)'); fade.addColorStop(1, 'rgba(11,5,48,1)')
+    const fade = c.createLinearGradient(0, base, 0, h); fade.addColorStop(0, 'rgba(8,24,28,.25)'); fade.addColorStop(1, 'rgba(8,24,28,1)')
     c.fillStyle = fade; c.fillRect(0, base, w, depth)
     c.fillStyle = 'rgba(255,255,255,.08)'; for (let i = 0; i < 18; i++) c.fillRect((i * 97) % w, base + 8 + (i * 13) % (depth - 10), 20 + (i * 31) % 60, 1)
   }
@@ -105,7 +106,7 @@ function drawCity(c: Ctx, w: number, base: number, H: number, t: Theme) {
   { const sg = c.createLinearGradient(0, base - 42, 0, base - 6); sg.addColorStop(0, t.sea[0]); sg.addColorStop(1, t.sea[1]); c.fillStyle = sg; c.fillRect(w * .5, base - 42, w * .5, 36) }
   neonIdx = 2; schools(c, w, base, t)
   c.fillStyle = t.ground; c.fillRect(0, base - 6, w, 6)
-  if (t.neon) { c.save(); c.shadowColor = '#00E5FF'; c.shadowBlur = 10; c.fillStyle = '#00E5FF'; c.fillRect(0, base - 2, w, 1.5); c.restore() }
+  if (t.neon) { c.save(); c.shadowColor = '#2FD0B4'; c.shadowBlur = 10; c.fillStyle = '#2FD0B4'; c.fillRect(0, base - 2, w, 1.5); c.restore() }
 }
 function windows(c: Ctx, x: number, y: number, bw: number, bh: number, t: Theme, r: () => number, density: number) {
   c.fillStyle = t.neon ? neonColor(t) : t.win
