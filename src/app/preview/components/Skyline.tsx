@@ -7,14 +7,35 @@ import { Look, readLook, onLook } from '../lib/look'
 // Kuwait Towers, Liberation Tower, Al Hamra, low school buildings in front.
 // Procedural (no image assets); colours follow the chosen look.
 
-type Theme = { sky: string[]; far: string; mid: string; near: string; win: string; winOn: number; stars: number; glow: string; ground: string; paper: boolean }
+type Theme = {
+  sky: string[]; far: string; mid: string; near: string; win: string; winOn: number; stars: number
+  glow: string; ground: string; paper: boolean
+  rim: string      // light catching the sun side of each building
+  tile: string     // mosaic discs on the Kuwait Towers spheres
+  stone: string    // Al Hamra's limestone cut face / Liberation's concrete ribs
+  sea: string[]    // water band gradient in front of the waterfront towers
+}
 const THEME: Record<Exclude<Look, 'current'>, Theme> = {
-  dusk:  { sky: ['#0F4F56', '#1A8A8C', '#F2B37A', '#F08A3C'], far: 'rgba(20,70,78,.28)', mid: '#1E4A52', near: '#152F36', win: '#FFD39A', winOn: .55, stars: 0, glow: 'rgba(240,138,60,.35)', ground: '#10272D', paper: false },
-  night: { sky: ['#040F13', '#07252C', '#0D3D46', '#13525B'], far: 'rgba(255,255,255,.05)', mid: '#0B2A31', near: '#06181D', win: '#FFD27A', winOn: .8, stars: 90, glow: 'rgba(240,138,60,.22)', ground: '#040F13', paper: false },
-  paper: { sky: ['#DDEFF0', '#EAF3F0', '#F7F3E8', '#FBF8F1'], far: '#CFE3E2', mid: '#A9CFCD', near: '#7FB5B4', win: '#FFFFFF', winOn: 0, stars: 0, glow: 'rgba(240,138,60,.18)', ground: '#5F9C9B', paper: true },
+  dusk:  { sky: ['#0F4F56', '#1A8A8C', '#F2B37A', '#F08A3C'], far: 'rgba(20,70,78,.28)', mid: '#1E4A52', near: '#152F36', win: '#FFD39A', winOn: .55, stars: 0, glow: 'rgba(240,138,60,.35)', ground: '#10272D', paper: false,
+           rim: 'rgba(255,196,130,.42)', tile: 'rgba(140,214,220,.55)', stone: 'rgba(244,222,190,.22)', sea: ['rgba(240,170,110,.35)', 'rgba(16,39,45,.0)'] },
+  night: { sky: ['#040F13', '#07252C', '#0D3D46', '#13525B'], far: 'rgba(255,255,255,.05)', mid: '#0B2A31', near: '#06181D', win: '#FFD27A', winOn: .8, stars: 90, glow: 'rgba(240,138,60,.22)', ground: '#040F13', paper: false,
+           rim: 'rgba(255,220,160,.16)', tile: 'rgba(150,230,240,.75)', stone: 'rgba(255,235,200,.12)', sea: ['rgba(255,210,122,.18)', 'rgba(4,15,19,0)'] },
+  paper: { sky: ['#DDEFF0', '#EAF3F0', '#F7F3E8', '#FBF8F1'], far: '#CFE3E2', mid: '#A9CFCD', near: '#7FB5B4', win: '#FFFFFF', winOn: 0, stars: 0, glow: 'rgba(240,138,60,.18)', ground: '#5F9C9B', paper: true,
+           rim: 'rgba(255,255,255,.45)', tile: 'rgba(255,255,255,.55)', stone: 'rgba(255,255,255,.35)', sea: ['rgba(255,255,255,.35)', 'rgba(95,156,155,0)'] },
 }
 
 const rnd = (seed: number) => { let s = seed; return () => (s = (s * 9301 + 49297) % 233280) / 233280 }
+type Ctx = CanvasRenderingContext2D
+
+/** Draw `path` (a closed shape) filled with `fill`, then a sun-side rim light inside it. */
+function solid(c: Ctx, path: () => void, fill: string, t: Theme, x0: number, x1: number) {
+  c.beginPath(); path(); c.closePath(); c.fillStyle = fill; c.fill()
+  c.save(); c.beginPath(); path(); c.closePath(); c.clip()
+  const g = c.createLinearGradient(x0, 0, x1, 0); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(.72, 'rgba(0,0,0,0)'); g.addColorStop(1, t.rim)
+  c.fillStyle = g; c.fillRect(x0 - 2, -9999, x1 - x0 + 4, 20000)
+  c.restore()
+}
+function rect(c: Ctx, x: number, y: number, w: number, h: number) { c.moveTo(x, y); c.lineTo(x + w, y); c.lineTo(x + w, y + h); c.lineTo(x, y + h) }
 
 function draw(canvas: HTMLCanvasElement, t: Theme) {
   const dpr = Math.min(window.devicePixelRatio || 1, 2)
@@ -23,63 +44,154 @@ function draw(canvas: HTMLCanvasElement, t: Theme) {
   canvas.width = w * dpr; canvas.height = h * dpr
   const c = canvas.getContext('2d'); if (!c) return
   c.setTransform(dpr, 0, 0, dpr, 0, 0)
+  // sky
   const g = c.createLinearGradient(0, 0, 0, h)
   g.addColorStop(0, t.sky[0]); g.addColorStop(.45, t.sky[1]); g.addColorStop(.8, t.sky[2]); g.addColorStop(1, t.sky[3])
   c.fillStyle = g; c.fillRect(0, 0, w, h)
   if (t.stars) { const r = rnd(7); c.fillStyle = 'rgba(255,255,255,.75)'; for (let i = 0; i < t.stars; i++) { c.globalAlpha = .3 + r() * .7; c.fillRect(r() * w, r() * h * .55, r() * 1.4 + .3, r() * 1.4 + .3) } c.globalAlpha = 1 }
-  const gx = w * .72, gy = h * .8
-  const rg = c.createRadialGradient(gx, gy, 10, gx, gy, Math.max(w, h) * .45); rg.addColorStop(0, t.glow); rg.addColorStop(1, 'rgba(0,0,0,0)')
+  // sun / city glow low on the right
+  const gx = w * .78, gy = h * .82
+  const rg = c.createRadialGradient(gx, gy, 10, gx, gy, Math.max(w, h) * .5); rg.addColorStop(0, t.glow); rg.addColorStop(1, 'rgba(0,0,0,0)')
   c.fillStyle = rg; c.fillRect(0, 0, w, h)
-  const base = h, H = Math.min(h, 760)
-  // far blocks
-  { const r = rnd(3); c.fillStyle = t.far; let x = -20; while (x < w + 20) { const bw = 30 + r() * 70, bh = (.12 + r() * .42) * H * .75; c.fillRect(x, base - bh, bw, bh); x += bw + 4 + r() * 14 } }
-  // mid blocks
-  { const r = rnd(17); let x = -10; while (x < w + 10) { const bw = 34 + r() * 60, bh = (.3 + r() * .25) * H * .75; c.fillStyle = t.mid; c.fillRect(x, base - bh, bw, bh); if (t.winOn) windows(c, x, base - bh, bw, bh, t, r, .5); x += bw + 6 + r() * 18 } }
-  kuwaitTowers(c, w * .80, base, H * .72, t)
-  liberation(c, w * .56, base, H * .8, t)
-  alHamra(c, w * .66, base, H * .64, t)
+  if (!t.paper) { // sun disc sitting on the horizon (dusk) / moon (night)
+    c.beginPath(); c.arc(gx, gy, t.stars ? 14 : 34, 0, Math.PI * 2); c.fillStyle = t.stars ? 'rgba(255,244,214,.9)' : 'rgba(255,214,150,.85)'; c.fill()
+  }
+  const base = h, H = Math.min(h, 820)
+  // far haze: low city
+  { const r = rnd(3); c.fillStyle = t.far; let x = -20; while (x < w + 20) { const bw = 30 + r() * 70, bh = (.10 + r() * .36) * H * .75; c.fillRect(x, base - bh, bw, bh); x += bw + 4 + r() * 14 } }
+  // mid layer: generic towers + mosque, spaced to leave the centre (Orbit) calmer
+  { const r = rnd(17); let x = -10; while (x < w + 10) { const bw = 34 + r() * 56, bh = (.22 + r() * .26) * H * .75; const inCentre = x + bw > w * .36 && x < w * .64; const hh = inCentre ? bh * .55 : bh; solid(c, () => rect(c, x, base - hh, bw, hh), t.mid, t, x, x + bw); if (t.winOn) windows(c, x, base - hh, bw, hh, t, r, .45); x += bw + 8 + r() * 22 } }
+  grandMosque(c, w * .16, base, H * .36, t)
+  seifClock(c, w * .30, base, H * .30, t)
+  // the three landmarks on the waterfront, right of centre
+  liberation(c, w * .60, base, H * .88, t)
+  alHamra(c, w * .70, base, H * .80, t)
+  kuwaitTowers(c, w * .82, base, H * .70, t)
+  // water band the towers stand beside
+  { const sg = c.createLinearGradient(0, base - 42, 0, base - 6); sg.addColorStop(0, t.sea[0]); sg.addColorStop(1, t.sea[1]); c.fillStyle = sg; c.fillRect(w * .5, base - 42, w * .5, 36) }
   schools(c, w, base, t)
   c.fillStyle = t.ground; c.fillRect(0, base - 6, w, 6)
 }
-function windows(c: CanvasRenderingContext2D, x: number, y: number, bw: number, bh: number, t: Theme, r: () => number, density: number) {
+function windows(c: Ctx, x: number, y: number, bw: number, bh: number, t: Theme, r: () => number, density: number) {
   c.fillStyle = t.win
   for (let yy = y + 10; yy < y + bh - 8; yy += 12) for (let xx = x + 6; xx < x + bw - 6; xx += 10) if (r() < t.winOn * density) { c.globalAlpha = .5 + r() * .5; c.fillRect(xx, yy, 4, 6) }
   c.globalAlpha = 1
 }
-function sphere(c: CanvasRenderingContext2D, x: number, y: number, r: number, t: Theme) {
-  c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fillStyle = t.near; c.fill()
-  if (!t.paper) { c.save(); c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.clip(); c.fillStyle = t.win; c.globalAlpha = t.winOn ? .55 : .3; for (let i = -r; i < r; i += 5) c.fillRect(x - r, y + i, r * 2, 1.5); c.restore(); c.globalAlpha = 1 }
-  else { c.beginPath(); c.arc(x - r * .3, y - r * .3, r * .55, 0, Math.PI * 2); c.fillStyle = 'rgba(255,255,255,.25)'; c.fill() }
+
+/* Kuwait Towers (1979): three concrete needles on one podium. The main tower
+   carries two spheres (a big water tank + restaurant, a small viewing sphere),
+   the second one sphere, the third is a bare needle. The spheres are covered
+   in thousands of enamelled steel discs, blue-green, in horizontal rows. */
+function kuwaitTowers(c: Ctx, x: number, base: number, H: number, t: Theme) {
+  // podium
+  solid(c, () => { c.moveTo(x - H * .16, base); c.lineTo(x + H * .66, base); c.lineTo(x + H * .62, base - 10); c.lineTo(x - H * .12, base - 10) }, t.near, t, x - H * .16, x + H * .66)
+  const needle = (nx: number, nh: number, wBase: number) => solid(c, () => { c.moveTo(nx - wBase / 2, base - 10); c.lineTo(nx + wBase / 2, base - 10); c.lineTo(nx + 1.2, base - nh); c.lineTo(nx - 1.2, base - nh) }, t.near, t, nx - wBase / 2, nx + wBase / 2)
+  // main tower: 187 m — big sphere at ~44 %, small sphere at ~66 %
+  needle(x, H, H * .075)
+  sphere(c, x, base - H * .44, H * .105, t, true)
+  sphere(c, x, base - H * .67, H * .058, t, false)
+  // second tower: 147 m with one sphere
+  const x2 = x + H * .30; needle(x2, H * .78, H * .062); sphere(c, x2, base - H * .50, H * .082, t, false)
+  // third tower: a 113 m needle with the lighting bulb near the top
+  const x3 = x + H * .52; needle(x3, H * .60, H * .05)
+  solid(c, () => { c.moveTo(x3 - H * .014, base - H * .42); c.lineTo(x3 + H * .014, base - H * .42); c.lineTo(x3 + H * .006, base - H * .58); c.lineTo(x3 - H * .006, base - H * .58) }, t.near, t, x3 - 6, x3 + 6)
 }
-function kuwaitTowers(c: CanvasRenderingContext2D, x: number, base: number, height: number, t: Theme) {
-  c.fillStyle = t.near
-  c.fillRect(x - 4, base - height, 8, height)
-  sphere(c, x, base - height * .56, height * .11, t); sphere(c, x, base - height * .86, height * .065, t)
-  const x2 = x + height * .22; c.fillStyle = t.near; c.fillRect(x2 - 3, base - height * .72, 6, height * .72); sphere(c, x2, base - height * .6, height * .085, t)
-  const x3 = x + height * .36; c.fillStyle = t.near; c.fillRect(x3 - 2, base - height * .62, 4, height * .62)
+function sphere(c: Ctx, x: number, y: number, r: number, t: Theme, big: boolean) {
+  // body with a soft light from the upper left
+  const g = c.createRadialGradient(x - r * .35, y - r * .4, r * .1, x, y, r)
+  g.addColorStop(0, t.paper ? 'rgba(255,255,255,.55)' : 'rgba(255,255,255,.14)'); g.addColorStop(1, 'rgba(0,0,0,0)')
+  c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fillStyle = t.near; c.fill(); c.fillStyle = g; c.fill()
+  // the disc mosaic: rows of small dots, denser towards the equator; the big sphere's upper third is the plain viewing band
+  c.save(); c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.clip()
+  c.fillStyle = t.tile
+  const step = Math.max(3, r / 7)
+  for (let yy = y - r; yy <= y + r; yy += step) {
+    if (big && yy < y - r * .35) continue
+    const half = Math.sqrt(Math.max(0, r * r - (yy - y) * (yy - y)))
+    for (let xx = x - half; xx <= x + half; xx += step) { c.globalAlpha = .35 + .65 * (1 - Math.abs(yy - y) / r); c.beginPath(); c.arc(xx, yy, step * .28, 0, Math.PI * 2); c.fill() }
+  }
+  c.globalAlpha = 1
+  if (big) { // seam ring between the viewing band and the tank
+    c.fillStyle = t.paper ? 'rgba(255,255,255,.7)' : 'rgba(255,255,255,.35)'; c.fillRect(x - r, y - r * .35, r * 2, 1.5)
+    if (t.winOn) { c.fillStyle = t.win; c.globalAlpha = .9; for (let xx = x - r * .9; xx < x + r * .9; xx += 6) c.fillRect(xx, y - r * .55, 3, 4); c.globalAlpha = 1 }
+  }
+  c.restore()
 }
-function liberation(c: CanvasRenderingContext2D, x: number, base: number, height: number, t: Theme) {
-  c.fillStyle = t.near
-  c.beginPath(); c.moveTo(x - 14, base); c.lineTo(x + 14, base); c.lineTo(x + 7, base - height * .72); c.lineTo(x - 7, base - height * .72); c.closePath(); c.fill()
-  c.beginPath(); c.ellipse(x, base - height * .72, 26, 9, 0, 0, Math.PI * 2); c.fill()
-  c.fillRect(x - 9, base - height * .72, 18, -height * .06)
-  c.beginPath(); c.ellipse(x, base - height * .78, 14, 5, 0, 0, Math.PI * 2); c.fill()
-  c.fillRect(x - 1.5, base - height, 3, height * .22)
-  if (t.winOn) { c.fillStyle = t.win; c.globalAlpha = .9; c.fillRect(x - 24, base - height * .72 - 2, 48, 1.5); c.globalAlpha = 1 }
+
+/* Liberation Tower (1996, 372 m): a tapering round concrete shaft on a broad
+   sloped base, a two-storey observation ring at about 40 %, a smaller service
+   ring higher up, a thicker telecom head and a long mast. */
+function liberation(c: Ctx, x: number, base: number, H: number, t: Theme) {
+  solid(c, () => { c.moveTo(x - H * .09, base); c.lineTo(x + H * .09, base); c.lineTo(x + H * .05, base - H * .07); c.lineTo(x - H * .05, base - H * .07) }, t.near, t, x - H * .09, x + H * .09)
+  solid(c, () => { c.moveTo(x - H * .034, base - H * .07); c.lineTo(x + H * .034, base - H * .07); c.lineTo(x + H * .014, base - H * .74); c.lineTo(x - H * .014, base - H * .74) }, t.near, t, x - H * .034, x + H * .034)
+  // vertical ribs on the shaft
+  c.fillStyle = t.stone; for (let i = -2; i <= 2; i++) c.fillRect(x + i * H * .011 - .5, base - H * .72, 1, H * .64)
+  const ring = (ry: number, rw: number, rh: number, lit: boolean) => {
+    solid(c, () => { c.moveTo(x - rw, ry); c.lineTo(x + rw, ry); c.lineTo(x + rw * .8, ry + rh); c.lineTo(x - rw * .8, ry + rh) }, t.near, t, x - rw, x + rw)
+    c.beginPath(); c.ellipse(x, ry, rw, rw * .22, 0, 0, Math.PI * 2); c.fillStyle = t.near; c.fill()
+    if (lit && t.winOn) { c.fillStyle = t.win; c.globalAlpha = .85; for (let xx = x - rw + 4; xx < x + rw - 4; xx += 6) c.fillRect(xx, ry + rh * .35, 3, rh * .3); c.globalAlpha = 1 }
+    else if (lit) { c.fillStyle = t.stone; c.fillRect(x - rw + 2, ry + rh * .4, rw * 2 - 4, 1.5) }
+  }
+  ring(base - H * .42, H * .075, H * .05, true)      // observation deck + revolving restaurant
+  ring(base - H * .37, H * .06, H * .025, false)
+  ring(base - H * .60, H * .045, H * .02, false)     // service platform
+  // telecom head + mast
+  solid(c, () => rect(c, x - H * .024, base - H * .84, H * .048, H * .11), t.near, t, x - H * .024, x + H * .024)
+  c.fillStyle = t.near; c.fillRect(x - 1.5, base - H, 3, H * .17)
+  c.beginPath(); c.arc(x, base - H * .98, 2.5, 0, Math.PI * 2); c.fillStyle = t.winOn ? '#FF6B6B' : t.near; c.fill()
 }
-function alHamra(c: CanvasRenderingContext2D, x: number, base: number, height: number, t: Theme) {
-  c.fillStyle = t.mid
-  c.beginPath(); c.moveTo(x - 26, base); c.lineTo(x + 26, base); c.lineTo(x + 26, base - height); c.lineTo(x - 2, base - height)
-  c.quadraticCurveTo(x - 30, base - height * .55, x - 26, base - height * .2); c.closePath(); c.fill()
-  if (t.winOn) windows(c, x - 24, base - height, 50, height, t, rnd(5), .35)
+
+/* Al Hamra Tower (2011, 412 m): a tall limestone-and-glass slab whose south
+   face is carved away in a quarter turn, so the silhouette is a straight edge
+   on one side and a long concave sweep up to a narrow, slanted top. */
+function alHamra(c: Ctx, x: number, base: number, H: number, t: Theme) {
+  const W = H * .085
+  const body = () => { c.moveTo(x - W, base); c.lineTo(x + W, base); c.lineTo(x + W, base - H * .30); c.quadraticCurveTo(x + W * 1.15, base - H * .92, x - W * .15, base - H); c.lineTo(x - W, base - H * .985) }
+  solid(c, body, t.mid, t, x - W, x + W)
+  // the carved stone face: a lighter sliver along the sweep
+  c.save(); c.beginPath(); body(); c.closePath(); c.clip()
+  c.beginPath(); c.moveTo(x + W, base - H * .30); c.quadraticCurveTo(x + W * 1.15, base - H * .92, x - W * .15, base - H); c.lineTo(x - W * .15 - W * .45, base - H); c.quadraticCurveTo(x + W * .55, base - H * .9, x + W * .45, base - H * .3); c.closePath()
+  c.fillStyle = t.stone; c.fill()
+  // floor lines on the glass face
+  c.fillStyle = t.paper ? 'rgba(255,255,255,.25)' : 'rgba(255,255,255,.07)'; for (let yy = base - 14; yy > base - H; yy -= 11) c.fillRect(x - W, yy, W * 2, 1)
+  if (t.winOn) { const r = rnd(5); windows(c, x - W + 2, base - H, W * 2 - 4, H, t, r, .3) }
+  c.restore()
 }
-function schools(c: CanvasRenderingContext2D, w: number, base: number, t: Theme) {
+
+/* Grand Mosque: a wide prayer hall, the big central dome on a drum, and the
+   tall slender minaret with its balcony. */
+function grandMosque(c: Ctx, x: number, base: number, H: number, t: Theme) {
+  const W = H * .9
+  solid(c, () => rect(c, x - W / 2, base - H * .34, W, H * .34), t.mid, t, x - W / 2, x + W / 2)
+  solid(c, () => rect(c, x - W * .22, base - H * .46, W * .44, H * .14), t.mid, t, x - W * .22, x + W * .22)
+  solid(c, () => { c.arc(x, base - H * .46, W * .22, Math.PI, 0) ; c.lineTo(x + W * .22, base - H * .46) }, t.mid, t, x - W * .22, x + W * .22)
+  c.fillStyle = t.mid; c.fillRect(x - 1, base - H * .46 - W * .22 - 12, 2, 12)
+  // small corner domes
+  for (const dx of [-W * .42, W * .42]) { c.beginPath(); c.arc(x + dx, base - H * .34, W * .07, Math.PI, 0); c.fillStyle = t.mid; c.fill() }
+  // minaret
+  const mx = x + W * .62
+  solid(c, () => { c.moveTo(mx - H * .035, base); c.lineTo(mx + H * .035, base); c.lineTo(mx + H * .02, base - H * .92); c.lineTo(mx - H * .02, base - H * .92) }, t.mid, t, mx - H * .035, mx + H * .035)
+  c.fillStyle = t.mid; c.fillRect(mx - H * .04, base - H * .66, H * .08, 5); c.fillRect(mx - H * .03, base - H * .82, H * .06, 4)
+  c.beginPath(); c.arc(mx, base - H * .95, H * .03, 0, Math.PI * 2); c.fill(); c.fillRect(mx - .8, base - H, 1.6, H * .05)
+  if (t.winOn) { c.fillStyle = t.win; c.globalAlpha = .8; for (let xx = x - W / 2 + 8; xx < x + W / 2 - 8; xx += 14) c.fillRect(xx, base - H * .24, 4, 9); c.globalAlpha = 1 }
+}
+
+/* Seif Palace clock tower: square shaft, the blue-tiled top, four clock faces. */
+function seifClock(c: Ctx, x: number, base: number, H: number, t: Theme) {
+  const W = H * .14
+  solid(c, () => rect(c, x - W, base - H * .8, W * 2, H * .8), t.mid, t, x - W, x + W)
+  solid(c, () => { c.moveTo(x - W * 1.25, base - H * .8); c.lineTo(x + W * 1.25, base - H * .8); c.lineTo(x, base - H) }, t.mid, t, x - W * 1.25, x + W * 1.25)
+  c.beginPath(); c.arc(x, base - H * .68, W * .55, 0, Math.PI * 2); c.fillStyle = t.winOn ? t.win : 'rgba(255,255,255,.5)'; c.fill()
+  c.strokeStyle = t.mid; c.lineWidth = 1.2; c.beginPath(); c.moveTo(x, base - H * .68); c.lineTo(x, base - H * .68 - W * .4); c.moveTo(x, base - H * .68); c.lineTo(x + W * .3, base - H * .68); c.stroke()
+}
+
+function schools(c: Ctx, w: number, base: number, t: Theme) {
   const r = rnd(21); let x = -30
   while (x < w + 40) {
     const bw = 90 + r() * 80, floors = 2 + Math.floor(r() * 2), fh = 22, bh = floors * fh + 10
-    c.fillStyle = t.near; c.fillRect(x, base - bh, bw, bh)
-    if (r() < .5) { c.beginPath(); c.moveTo(x - 6, base - bh); c.lineTo(x + bw / 2, base - bh - 26); c.lineTo(x + bw + 6, base - bh); c.closePath(); c.fill() }
-    else { c.fillRect(x + bw * .5 - 1, base - bh - 22, 2, 22); c.fillStyle = t.paper ? '#F08A3C' : 'rgba(240,138,60,.9)'; c.fillRect(x + bw * .5 + 1, base - bh - 22, 12, 8) }
+    solid(c, () => rect(c, x, base - bh, bw, bh), t.near, t, x, x + bw)
+    if (r() < .5) { c.beginPath(); c.moveTo(x - 6, base - bh); c.lineTo(x + bw / 2, base - bh - 26); c.lineTo(x + bw + 6, base - bh); c.closePath(); c.fillStyle = t.near; c.fill() }
+    else { c.fillStyle = t.near; c.fillRect(x + bw * .5 - 1, base - bh - 22, 2, 22); c.fillStyle = t.paper ? '#F08A3C' : 'rgba(240,138,60,.9)'; c.fillRect(x + bw * .5 + 1, base - bh - 22, 12, 8) }
     c.fillStyle = t.paper ? 'rgba(255,255,255,.35)' : 'rgba(255,255,255,.12)'; c.fillRect(x + bw / 2 - 7, base - 20, 14, 20)
     if (!t.paper) { c.fillStyle = t.win; for (let f = 0; f < floors; f++) for (let wx = x + 10; wx < x + bw - 12; wx += 16) if (r() < (t.winOn ? .75 : .45)) { c.globalAlpha = t.winOn ? .75 + r() * .25 : .5; c.fillRect(wx, base - bh + 10 + f * fh, 8, 10) } c.globalAlpha = 1 }
     else { c.fillStyle = 'rgba(255,255,255,.55)'; for (let f = 0; f < floors; f++) for (let wx = x + 10; wx < x + bw - 12; wx += 16) c.fillRect(wx, base - bh + 10 + f * fh, 8, 10) }
