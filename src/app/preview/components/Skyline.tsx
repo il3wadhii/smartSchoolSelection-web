@@ -15,12 +15,10 @@ type Theme = {
   stone: string    // Al Hamra's limestone cut face / Liberation's concrete ribs
   sea: string[]    // water band gradient in front of the waterfront towers
 }
-const THEME: Record<Exclude<Look, 'current'>, Theme> = {
-  dusk:  { sky: ['#15232E', '#1F8A78', '#F8CFA0', '#F4961E'], far: 'rgba(20,70,78,.28)', mid: '#1E4A52', near: '#152F36', win: '#FFD39A', winOn: .55, stars: 0, glow: 'rgba(240,138,60,.35)', ground: '#10272D', paper: false,
+const THEME: Record<Look, Theme> = {
+  night: { sky: ['#15232E', '#1F8A78', '#F8CFA0', '#F4961E'], far: 'rgba(20,70,78,.28)', mid: '#1E4A52', near: '#152F36', win: '#FFD39A', winOn: .55, stars: 0, glow: 'rgba(240,138,60,.35)', ground: '#10272D', paper: false,
            rim: 'rgba(255,196,130,.42)', tile: 'rgba(140,214,220,.55)', stone: 'rgba(244,222,190,.22)', sea: ['rgba(240,170,110,.35)', 'rgba(16,39,45,.0)'] },
-  night: { sky: ['#0A1A20', '#0F3038', '#155E51', '#1F8A78'], far: 'rgba(255,255,255,.05)', mid: '#0B2A31', near: '#06181D', win: '#FFD27A', winOn: .8, stars: 90, glow: 'rgba(240,138,60,.22)', ground: '#040F13', paper: false,
-           rim: 'rgba(255,220,160,.16)', tile: 'rgba(150,230,240,.75)', stone: 'rgba(255,235,200,.12)', sea: ['rgba(255,210,122,.18)', 'rgba(4,15,19,0)'] },
-  paper: { sky: ['#E6F2EE', '#EEF5F1', '#F8F4EA', '#FBF6EC'], far: '#CFE3E2', mid: '#A9CFCD', near: '#7FB5B4', win: '#FFFFFF', winOn: 0, stars: 0, glow: 'rgba(240,138,60,.18)', ground: '#5F9C9B', paper: true,
+  day:   { sky: ['#E6F2EE', '#EEF5F1', '#F8F4EA', '#FBF6EC'], far: '#CFE3E2', mid: '#A9CFCD', near: '#7FB5B4', win: '#FFFFFF', winOn: 0, stars: 0, glow: 'rgba(240,138,60,.18)', ground: '#5F9C9B', paper: true,
            rim: 'rgba(255,255,255,.45)', tile: 'rgba(255,255,255,.55)', stone: 'rgba(255,255,255,.35)', sea: ['rgba(255,255,255,.35)', 'rgba(95,156,155,0)'] },
 }
 
@@ -234,16 +232,15 @@ function schools(c: Ctx, w: number, base: number, t: Theme) {
 
 export default function Skyline() {
   const ref = useRef<HTMLCanvasElement>(null)
-  const [look, setLook] = useState<Look>('current')
+  const [look, setLook] = useState<Look>('day')
   useEffect(() => { setLook(readLook()); return onLook(setLook) }, [])
   useEffect(() => {
-    if (look === 'current' || !ref.current) return
+    if (!ref.current) return
     const el = ref.current
     const paint = () => draw(el, THEME[look])
     paint()
     const ro = new ResizeObserver(paint); ro.observe(el)
     return () => ro.disconnect()
   }, [look])
-  if (look === 'current') return null
   return <canvas ref={ref} className="prev-skyline" aria-hidden="true" />
 }

@@ -6,8 +6,8 @@ import PrevPortalBar from './components/PrevPortalBar'
 import PrevHeader from './components/PrevHeader'
 import PrevFooter from './components/PrevFooter'
 import PrevAssistant from './components/PrevAssistant'
-import LookSwitcher from './components/LookSwitcher'
 import Skyline from './components/Skyline'
+import { THEME_BOOT_SCRIPT } from './lib/look'
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -21,14 +21,15 @@ export const metadata: Metadata = {
 
 export default function PreviewLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className={`prev ${poppins.variable}`}>
+    <div className={`prev ${poppins.variable}`} data-look="day">
+      {/* picks day/night before first paint (saved choice, ?theme=, or the clock) */}
+      <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
       <Skyline />
       <PrevPortalBar />
       <PrevHeader />
       <main>{children}</main>
       <PrevFooter />
       <PrevAssistant />
-      <LookSwitcher />
     </div>
   )
 }

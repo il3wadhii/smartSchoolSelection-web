@@ -1,22 +1,21 @@
 /* ── Glass + Kuwait skyline looks (test) ─────────────────────────────────
-   Active only when .prev carries data-look="dusk|night|paper". Without the
-   attribute the live Orbit design is untouched.
+   .prev carries data-look="day|night" (set before paint, toggled in the header).
    The skyline is a FIXED full-viewport canvas: it stays still while the page
    (header, hero, and every section as a frosted sheet) scrolls over it. */
 
-/* floating test switch */
-.prev-lookswitch { position: fixed; left: 16px; bottom: 16px; z-index: 60; display: inline-flex; align-items: center; gap: 4px; padding: 5px 6px 5px 12px; border-radius: 999px; background: rgba(21,35,46,.92); color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,.25); font-family: var(--font-poppins), sans-serif; font-size: 12px; }
-.prev-lookswitch .lbl { font-weight: 700; letter-spacing: 1px; text-transform: uppercase; font-size: 10px; opacity: .6; margin-right: 4px; }
-.prev-lookswitch button { font: inherit; font-weight: 700; color: rgba(255,255,255,.75); background: transparent; border: 0; border-radius: 999px; padding: 6px 10px; cursor: pointer; }
-.prev-lookswitch button:hover { color: #fff; background: rgba(255,255,255,.1); }
-.prev-lookswitch button.on { background: var(--teal); color: #fff; }
-.prev-lookswitch button:focus-visible { outline: 2px solid var(--orange); }
-
+/* Day / Night toggle in the header */
+.prev-theme { display: inline-flex; align-items: center; gap: 7px; height: 34px; padding: 0 12px 0 4px; border-radius: 999px; border: 1px solid var(--hd-line, var(--line)); background: var(--tg-bg); color: var(--hd-fg, var(--ink)); font-family: var(--font-poppins); font-weight: 700; font-size: 12.5px; cursor: pointer; transition: background .2s, color .2s; }
+.prev-theme .knob { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--tg-knob); color: var(--tg-knob-fg); transition: background .2s; }
+.prev-theme:hover { background: var(--tg-bg-hover); }
+.prev-theme:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+.prev[data-look="day"] { --tg-bg: rgba(255,255,255,.7); --tg-bg-hover: #fff; --tg-knob: var(--orange); --tg-knob-fg: #3a2305; }
+.prev[data-look="night"] { --tg-bg: rgba(255,255,255,.12); --tg-bg-hover: rgba(255,255,255,.2); --tg-knob: #F8CFA0; --tg-knob-fg: #15232E; }
+@media (max-width: 480px) { .prev-theme .lbl { display: none; } .prev-theme { padding-right: 4px; } }
 /* the still backdrop + everything else above it */
 .prev-skyline { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; pointer-events: none; }
 .prev[data-look] { background: transparent; }
 .prev[data-look] > :not(.prev-skyline) { position: relative; z-index: 1; }
-.prev[data-look] .prev-header { z-index: 50; }
+.prev[data-look] .prev-header { position: sticky; z-index: 50; }
 
 /* hero: no own background, header floats over the sky */
 .prev[data-look] .prev-hero { margin-top: -70px; padding: 118px 0 56px; }
@@ -66,55 +65,27 @@
   .prev-lookswitch button { padding: 6px 7px; }
 }
 
-/* ── 2 · Dusk: sunset sky, light frosted sheets ── */
-.prev[data-look="dusk"] {
+/* ── Night: sunset sky, light frosted sheets ── */
+.prev[data-look="night"] {
   --g-bg: rgba(251,246,236,.58); --g-line: rgba(255,255,255,.7); --g-blur: 18px; --g-shadow: 0 24px 60px -24px rgba(15,79,86,.45);
   --hd-bg: rgba(15,79,86,.3); --hd-line: rgba(255,255,255,.18); --hd-fg: #fff; --hd-sub: rgba(255,255,255,.75);
   --hero-fg: #fff; --hero-hl: #fff; --hero-sub: rgba(255,255,255,.9); --st-fg: #15232E; --st-sub: #44555B;
   --card: rgba(255,255,255,.82); --line: rgba(21,35,46,.1);
 }
-.prev[data-look="dusk"] .prev-show-stats .st { background: rgba(255,255,255,.5); }
-.prev[data-look="dusk"] .prev-show-logoWrap::before { background: rgba(255,255,255,.82); }
-.prev[data-look="dusk"] .prev-lp { background: linear-gradient(170deg, rgba(255,255,255,.9) 30%, rgba(251,246,236,.9) 100%); }
-.prev[data-look="dusk"] .prev-input, .prev[data-look="dusk"] .prev-chip { background: rgba(255,255,255,.85); }
+.prev[data-look="night"] .prev-show-stats .st { background: rgba(255,255,255,.5); }
+.prev[data-look="night"] .prev-show-logoWrap::before { background: rgba(255,255,255,.82); }
+.prev[data-look="night"] .prev-lp { background: linear-gradient(170deg, rgba(255,255,255,.9) 30%, rgba(251,246,236,.9) 100%); }
+.prev[data-look="night"] .prev-input, .prev[data-look="night"] .prev-chip { background: rgba(255,255,255,.85); }
 
-/* ── 3 · Night: lit city, dark frosted sheets ── */
-.prev[data-look="night"] {
-  --cream: #0A2227; --ink: #EAF2F1; --muted: #A2B6BA; --card: rgba(255,255,255,.07); --line: rgba(255,255,255,.12);
-  --ttint: rgba(31,138,120,.22); --otint: rgba(244,150,30,.18); --teald: #7FD7C6; --oranged: #FFB86B;
-  --g-bg: rgba(6,24,29,.55); --g-line: rgba(255,255,255,.12); --g-blur: 20px; --g-shadow: 0 30px 70px -28px rgba(0,0,0,.7);
-  --hd-bg: rgba(4,15,19,.45); --hd-line: rgba(255,255,255,.1); --hd-fg: #EAF2F1; --hd-sub: rgba(234,242,241,.65);
-  --hero-fg: #fff; --hero-hl: #fff; --hero-sub: rgba(234,242,241,.85); --st-fg: #fff; --st-sub: rgba(234,242,241,.7);
-}
-.prev[data-look="night"] :is(h1, h2, h3, h4) { color: var(--ink); }
-.prev[data-look="night"] .prev-portalbar { background: #061418; }
-.prev[data-look="night"] .prev-show-stats .st { background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.16); }
-.prev[data-look="night"] .prev-show-stage .tile { background: rgba(255,255,255,.92); border-color: rgba(255,255,255,.9); -webkit-backdrop-filter: none; backdrop-filter: none; }
-.prev[data-look="night"] .prev-show-logoWrap::before { background: rgba(255,255,255,.94); border-color: rgba(255,255,255,.9); -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: 0 20px 60px rgba(0,0,0,.45); }
-.prev[data-look="night"] .prev-fcard, .prev[data-look="night"] .prev-card, .prev[data-look="night"] .prev-scard { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.12); }
-.prev[data-look="night"] .prev-fcard:hover, .prev[data-look="night"] .prev-scard:hover { box-shadow: 0 16px 30px rgba(0,0,0,.35); }
-.prev[data-look="night"] .prev-fcard .ghost { opacity: .18; color: #fff; }
-.prev[data-look="night"] .prev-arrowc { border-color: rgba(255,255,255,.25); color: #fff; }
-.prev[data-look="night"] .prev-lp { background: linear-gradient(170deg, rgba(255,255,255,.09) 30%, rgba(255,255,255,.04) 100%); border-color: rgba(255,255,255,.12); color: #EAF2F1; }
-.prev[data-look="night"] .prev-lp::after { background: linear-gradient(180deg, transparent, rgba(6,24,29,.9)); }
-.prev[data-look="night"] .prev-lp .wm img { mix-blend-mode: screen; opacity: .28; filter: grayscale(.2); }
-.prev[data-look="night"] .prev-input { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.14); color: #EAF2F1; }
-.prev[data-look="night"] .prev-input::placeholder { color: rgba(234,242,241,.55); }
-.prev[data-look="night"] .prev-chip { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.14); color: #EAF2F1; }
-.prev[data-look="night"] .prev-chip.on { background: var(--teal); border-color: var(--teal); }
-.prev[data-look="night"] .btnGhost { color: #EAF2F1; border-color: #EAF2F1; }
-.prev[data-look="night"] .btnGhost:hover { background: #EAF2F1; color: #0A2227; }
-.prev[data-look="night"] .prev-show-chip { color: #BFE9DF; background: rgba(31,138,120,.2); }
-
-/* ── 1 · Day (paper-cut): daylight, ink text, paper-white sheets, glass on the search ── */
-.prev[data-look="paper"] {
+/* ── Day (paper-cut): daylight, ink text, paper-white sheets, glass on the search ── */
+.prev[data-look="day"] {
   --g-bg: rgba(255,255,255,.82); --g-line: rgba(255,255,255,.95); --g-blur: 10px; --g-shadow: 0 18px 44px -24px rgba(30,45,51,.35);
   --hd-bg: rgba(251,246,236,.72); --hd-line: rgba(30,45,51,.08); --hd-fg: var(--ink); --hd-sub: var(--teal);
   --hero-fg: var(--ink); --hero-hl: var(--teald); --hero-sub: #44575E; --st-fg: var(--ink); --st-sub: var(--muted);
 }
-.prev[data-look="paper"] .prev-show-stats .st { background: #fff; border-color: var(--line); -webkit-backdrop-filter: none; backdrop-filter: none; }
-.prev[data-look="paper"] .prev-show-stage .tile { -webkit-backdrop-filter: none; backdrop-filter: none; background: #fff; }
-.prev[data-look="paper"] .prev-show-cta .btnGhost:hover { color: #fff; }
-.prev[data-look="paper"] .prev-search .prev-input { background: rgba(255,255,255,.75); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.prev[data-look="day"] .prev-show-stats .st { background: #fff; border-color: var(--line); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.prev[data-look="day"] .prev-show-stage .tile { -webkit-backdrop-filter: none; backdrop-filter: none; background: #fff; }
+.prev[data-look="day"] .prev-show-cta .btnGhost:hover { color: #fff; }
+.prev[data-look="day"] .prev-search .prev-input { background: rgba(255,255,255,.75); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
 
 @media (prefers-reduced-motion: reduce) { .prev-skyline { transition: none; } }

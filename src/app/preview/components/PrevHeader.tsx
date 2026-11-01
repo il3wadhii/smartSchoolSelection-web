@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { User, LogOut } from 'lucide-react'
+import ThemeToggle from './ThemeToggle'
 
 export default function PrevHeader() {
   const { isAuthenticated, user, logout } = useAuth()
@@ -23,6 +24,7 @@ export default function PrevHeader() {
           <Link href="/preview#about">About</Link>
         </nav>
         <div className="prev-actions">
+          <ThemeToggle />
           {isAuthenticated ? (
             <>
               <Link href="/profile" className="prev-signin">
