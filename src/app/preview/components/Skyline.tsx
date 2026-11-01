@@ -14,18 +14,13 @@ type Theme = {
   tile: string     // mosaic discs on the Kuwait Towers spheres
   stone: string    // Al Hamra's limestone cut face / Liberation's concrete ribs
   sea: string[]    // water band gradient in front of the waterfront towers
-  neon?: string[]  // glowing outline palette (neon look); also turns on the water reflection
 }
 const THEME: Record<Exclude<Look, 'current'>, Theme> = {
-  // Neon look in the brand palette: navy → teal sky, teal glow on the buildings, orange accents only
-  neon:  { sky: ['#0A1A20', '#0F3038', '#155E51', '#1F8A78'], far: 'rgba(159,232,218,.08)', mid: '#0E2A2E', near: '#0A1F24', win: '#CFF5EC', winOn: .5, stars: 120, glow: 'rgba(244,150,30,.22)', ground: '#08181C', paper: false,
-           rim: 'rgba(0,0,0,0)', tile: 'rgba(255,211,154,.85)', stone: 'rgba(255,255,255,.08)', sea: ['rgba(47,208,180,.14)', 'rgba(8,24,28,0)'],
-           neon: ['#2FD0B4', '#F4961E', '#9FE8DA', '#FFD39A', '#5BC8B0', '#FFB45C', '#CFF5EC'] },
-  dusk:  { sky: ['#0F4F56', '#1A8A8C', '#F2B37A', '#F08A3C'], far: 'rgba(20,70,78,.28)', mid: '#1E4A52', near: '#152F36', win: '#FFD39A', winOn: .55, stars: 0, glow: 'rgba(240,138,60,.35)', ground: '#10272D', paper: false,
+  dusk:  { sky: ['#15232E', '#1F8A78', '#F8CFA0', '#F4961E'], far: 'rgba(20,70,78,.28)', mid: '#1E4A52', near: '#152F36', win: '#FFD39A', winOn: .55, stars: 0, glow: 'rgba(240,138,60,.35)', ground: '#10272D', paper: false,
            rim: 'rgba(255,196,130,.42)', tile: 'rgba(140,214,220,.55)', stone: 'rgba(244,222,190,.22)', sea: ['rgba(240,170,110,.35)', 'rgba(16,39,45,.0)'] },
-  night: { sky: ['#040F13', '#07252C', '#0D3D46', '#13525B'], far: 'rgba(255,255,255,.05)', mid: '#0B2A31', near: '#06181D', win: '#FFD27A', winOn: .8, stars: 90, glow: 'rgba(240,138,60,.22)', ground: '#040F13', paper: false,
+  night: { sky: ['#0A1A20', '#0F3038', '#155E51', '#1F8A78'], far: 'rgba(255,255,255,.05)', mid: '#0B2A31', near: '#06181D', win: '#FFD27A', winOn: .8, stars: 90, glow: 'rgba(240,138,60,.22)', ground: '#040F13', paper: false,
            rim: 'rgba(255,220,160,.16)', tile: 'rgba(150,230,240,.75)', stone: 'rgba(255,235,200,.12)', sea: ['rgba(255,210,122,.18)', 'rgba(4,15,19,0)'] },
-  paper: { sky: ['#DDEFF0', '#EAF3F0', '#F7F3E8', '#FBF8F1'], far: '#CFE3E2', mid: '#A9CFCD', near: '#7FB5B4', win: '#FFFFFF', winOn: 0, stars: 0, glow: 'rgba(240,138,60,.18)', ground: '#5F9C9B', paper: true,
+  paper: { sky: ['#E6F2EE', '#EEF5F1', '#F8F4EA', '#FBF6EC'], far: '#CFE3E2', mid: '#A9CFCD', near: '#7FB5B4', win: '#FFFFFF', winOn: 0, stars: 0, glow: 'rgba(240,138,60,.18)', ground: '#5F9C9B', paper: true,
            rim: 'rgba(255,255,255,.45)', tile: 'rgba(255,255,255,.55)', stone: 'rgba(255,255,255,.35)', sea: ['rgba(255,255,255,.35)', 'rgba(95,156,155,0)'] },
 }
 
@@ -33,16 +28,8 @@ const rnd = (seed: number) => { let s = seed; return () => (s = (s * 9301 + 4929
 type Ctx = CanvasRenderingContext2D
 
 /** Draw `path` (a closed shape) filled with `fill`, then a sun-side rim light inside it. */
-let neonIdx = 0
-const neonColor = (t: Theme) => (t.neon ? t.neon[neonIdx % t.neon.length] : '')
 function solid(c: Ctx, path: () => void, fill: string, t: Theme, x0: number, x1: number) {
   c.beginPath(); path(); c.closePath(); c.fillStyle = fill; c.fill()
-  if (t.neon) { // glowing outline, one colour per building
-    const col = neonColor(t)
-    c.save(); c.shadowColor = col; c.shadowBlur = 14; c.strokeStyle = col; c.lineWidth = 1.5
-    c.beginPath(); path(); c.closePath(); c.stroke(); c.shadowBlur = 0; c.globalAlpha = .9; c.stroke(); c.restore()
-    return
-  }
   c.save(); c.beginPath(); path(); c.closePath(); c.clip()
   const g = c.createLinearGradient(x0, 0, x1, 0); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(.72, 'rgba(0,0,0,0)'); g.addColorStop(1, t.rim)
   c.fillStyle = g; c.fillRect(x0 - 2, -9999, x1 - x0 + 4, 20000)
@@ -69,47 +56,29 @@ function draw(canvas: HTMLCanvasElement, t: Theme) {
   if (!t.paper) { // sun disc sitting on the horizon (dusk) / moon (night)
     c.beginPath(); c.arc(gx, gy, t.stars ? 14 : 34, 0, Math.PI * 2); c.fillStyle = t.stars ? 'rgba(255,244,214,.9)' : 'rgba(255,214,150,.85)'; c.fill()
   }
-  const reflect = !!t.neon
-  const base = reflect ? h - Math.min(h * .16, 150) : h
-  const H = Math.min(base, 820)
-  if (reflect) { // horizon haze behind the city
-    const hz = c.createLinearGradient(0, base - H * .5, 0, base); hz.addColorStop(0, 'rgba(244,150,30,0)'); hz.addColorStop(1, 'rgba(244,150,30,.16)')
-    c.fillStyle = hz; c.fillRect(0, base - H * .5, w, H * .5)
-  }
+  const base = h, H = Math.min(h, 820)
   drawCity(c, w, base, H, t)
-  if (reflect) {
-    // the city mirrored in still water, fading out downwards
-    const depth = h - base
-    c.save(); c.beginPath(); c.rect(0, base, w, depth); c.clip()
-    c.translate(0, base); c.scale(1, -(depth / (H * .55))); c.translate(0, -base)
-    c.globalAlpha = .45; drawCity(c, w, base, H, t); c.restore()
-    const fade = c.createLinearGradient(0, base, 0, h); fade.addColorStop(0, 'rgba(8,24,28,.25)'); fade.addColorStop(1, 'rgba(8,24,28,1)')
-    c.fillStyle = fade; c.fillRect(0, base, w, depth)
-    c.fillStyle = 'rgba(255,255,255,.08)'; for (let i = 0; i < 18; i++) c.fillRect((i * 97) % w, base + 8 + (i * 13) % (depth - 10), 20 + (i * 31) % 60, 1)
-  }
 }
 
-/** Every building, front to back. Called once normally and once mirrored for the neon reflection. */
+/** Every building, front to back. */
 function drawCity(c: Ctx, w: number, base: number, H: number, t: Theme) {
-  neonIdx = 0
   // far haze: low city
   { const r = rnd(3); c.fillStyle = t.far; let x = -20; while (x < w + 20) { const bw = 30 + r() * 70, bh = (.10 + r() * .36) * H * .75; c.fillRect(x, base - bh, bw, bh); x += bw + 4 + r() * 14 } }
   // mid layer: generic towers + mosque, spaced to leave the centre (Orbit) calmer
-  { const r = rnd(17); let x = -10; while (x < w + 10) { const bw = 34 + r() * 56, bh = (.22 + r() * .26) * H * .75; const inCentre = x + bw > w * .36 && x < w * .64; const hh = inCentre ? bh * .55 : bh; neonIdx++; solid(c, () => rect(c, x, base - hh, bw, hh), t.mid, t, x, x + bw); if (t.winOn) windows(c, x, base - hh, bw, hh, t, r, .45); x += bw + 8 + r() * 22 } }
-  neonIdx = 3; grandMosque(c, w * .16, base, H * .36, t)
-  neonIdx = 0; seifClock(c, w * .30, base, H * .30, t)
+  { const r = rnd(17); let x = -10; while (x < w + 10) { const bw = 34 + r() * 56, bh = (.22 + r() * .26) * H * .75; const inCentre = x + bw > w * .36 && x < w * .64; const hh = inCentre ? bh * .55 : bh; solid(c, () => rect(c, x, base - hh, bw, hh), t.mid, t, x, x + bw); if (t.winOn) windows(c, x, base - hh, bw, hh, t, r, .45); x += bw + 8 + r() * 22 } }
+  grandMosque(c, w * .16, base, H * .36, t)
+  seifClock(c, w * .30, base, H * .30, t)
   // the three landmarks on the waterfront, right of centre
-  neonIdx = 1; liberation(c, w * .60, base, H * .96, t)
-  neonIdx = 0; alHamra(c, w * .70, base, H * .80, t)
-  neonIdx = 5; kuwaitTowers(c, w * .82, base, H * .70, t)
+  liberation(c, w * .60, base, H * .96, t)
+  alHamra(c, w * .70, base, H * .80, t)
+  kuwaitTowers(c, w * .82, base, H * .70, t)
   // water band the towers stand beside
   { const sg = c.createLinearGradient(0, base - 42, 0, base - 6); sg.addColorStop(0, t.sea[0]); sg.addColorStop(1, t.sea[1]); c.fillStyle = sg; c.fillRect(w * .5, base - 42, w * .5, 36) }
-  neonIdx = 2; schools(c, w, base, t)
+  schools(c, w, base, t)
   c.fillStyle = t.ground; c.fillRect(0, base - 6, w, 6)
-  if (t.neon) { c.save(); c.shadowColor = '#2FD0B4'; c.shadowBlur = 10; c.fillStyle = '#2FD0B4'; c.fillRect(0, base - 2, w, 1.5); c.restore() }
 }
 function windows(c: Ctx, x: number, y: number, bw: number, bh: number, t: Theme, r: () => number, density: number) {
-  c.fillStyle = t.neon ? neonColor(t) : t.win
+  c.fillStyle = t.win
   for (let yy = y + 10; yy < y + bh - 8; yy += 12) for (let xx = x + 6; xx < x + bw - 6; xx += 10) if (r() < t.winOn * density) { c.globalAlpha = .5 + r() * .5; c.fillRect(xx, yy, 4, 6) }
   c.globalAlpha = 1
 }
@@ -137,7 +106,6 @@ function sphere(c: Ctx, x: number, y: number, r: number, t: Theme, big: boolean)
   const g = c.createRadialGradient(x - r * .35, y - r * .4, r * .1, x, y, r)
   g.addColorStop(0, t.paper ? 'rgba(255,255,255,.55)' : 'rgba(255,255,255,.14)'); g.addColorStop(1, 'rgba(0,0,0,0)')
   c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fillStyle = t.near; c.fill(); c.fillStyle = g; c.fill()
-  if (t.neon) { const col = neonColor(t); c.save(); c.shadowColor = col; c.shadowBlur = 16; c.strokeStyle = col; c.lineWidth = 1.6; c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.stroke(); c.restore() }
   // the disc mosaic: rows of small dots, denser towards the equator; the big sphere's upper third is the plain viewing band
   c.save(); c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.clip()
   c.fillStyle = t.tile
@@ -254,13 +222,11 @@ function schools(c: Ctx, w: number, base: number, t: Theme) {
   const r = rnd(21); let x = -30
   while (x < w + 40) {
     const bw = 90 + r() * 80, floors = 2 + Math.floor(r() * 2), fh = 22, bh = floors * fh + 10
-    neonIdx++
     solid(c, () => rect(c, x, base - bh, bw, bh), t.near, t, x, x + bw)
     if (r() < .5) { c.beginPath(); c.moveTo(x - 6, base - bh); c.lineTo(x + bw / 2, base - bh - 26); c.lineTo(x + bw + 6, base - bh); c.closePath(); c.fillStyle = t.near; c.fill() }
     else { c.fillStyle = t.near; c.fillRect(x + bw * .5 - 1, base - bh - 22, 2, 22); c.fillStyle = t.paper ? '#F08A3C' : 'rgba(240,138,60,.9)'; c.fillRect(x + bw * .5 + 1, base - bh - 22, 12, 8) }
     c.fillStyle = t.paper ? 'rgba(255,255,255,.35)' : 'rgba(255,255,255,.12)'; c.fillRect(x + bw / 2 - 7, base - 20, 14, 20)
-    if (t.neon) { const col = neonColor(t); c.save(); c.shadowColor = col; c.shadowBlur = 8; c.fillStyle = col; for (let f = 0; f < floors; f++) for (let wx = x + 10; wx < x + bw - 12; wx += 16) if (r() < .7) c.fillRect(wx, base - bh + 10 + f * fh, 8, 10); c.restore() }
-    else if (!t.paper) { c.fillStyle = t.win; for (let f = 0; f < floors; f++) for (let wx = x + 10; wx < x + bw - 12; wx += 16) if (r() < (t.winOn ? .75 : .45)) { c.globalAlpha = t.winOn ? .75 + r() * .25 : .5; c.fillRect(wx, base - bh + 10 + f * fh, 8, 10) } c.globalAlpha = 1 }
+    if (!t.paper) { c.fillStyle = t.win; for (let f = 0; f < floors; f++) for (let wx = x + 10; wx < x + bw - 12; wx += 16) if (r() < (t.winOn ? .75 : .45)) { c.globalAlpha = t.winOn ? .75 + r() * .25 : .5; c.fillRect(wx, base - bh + 10 + f * fh, 8, 10) } c.globalAlpha = 1 }
     else { c.fillStyle = 'rgba(255,255,255,.55)'; for (let f = 0; f < floors; f++) for (let wx = x + 10; wx < x + bw - 12; wx += 16) c.fillRect(wx, base - bh + 10 + f * fh, 8, 10) }
     x += bw + 30 + r() * 60
   }

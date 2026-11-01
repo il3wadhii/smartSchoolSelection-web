@@ -66,7 +66,7 @@
   .prev-lookswitch button { padding: 6px 7px; }
 }
 
-/* ── 1 · Dusk: sunset sky, light frosted sheets ── */
+/* ── 2 · Dusk: sunset sky, light frosted sheets ── */
 .prev[data-look="dusk"] {
   --g-bg: rgba(251,246,236,.58); --g-line: rgba(255,255,255,.7); --g-blur: 18px; --g-shadow: 0 24px 60px -24px rgba(15,79,86,.45);
   --hd-bg: rgba(15,79,86,.3); --hd-line: rgba(255,255,255,.18); --hd-fg: #fff; --hd-sub: rgba(255,255,255,.75);
@@ -78,52 +78,35 @@
 .prev[data-look="dusk"] .prev-lp { background: linear-gradient(170deg, rgba(255,255,255,.9) 30%, rgba(251,246,236,.9) 100%); }
 .prev[data-look="dusk"] .prev-input, .prev[data-look="dusk"] .prev-chip { background: rgba(255,255,255,.85); }
 
-/* ── 2 · Night: lit city, dark frosted sheets ── */
-.prev:is([data-look="night"], [data-look="neon"]) {
+/* ── 3 · Night: lit city, dark frosted sheets ── */
+.prev[data-look="night"] {
   --cream: #0A2227; --ink: #EAF2F1; --muted: #A2B6BA; --card: rgba(255,255,255,.07); --line: rgba(255,255,255,.12);
   --ttint: rgba(31,138,120,.22); --otint: rgba(244,150,30,.18); --teald: #7FD7C6; --oranged: #FFB86B;
   --g-bg: rgba(6,24,29,.55); --g-line: rgba(255,255,255,.12); --g-blur: 20px; --g-shadow: 0 30px 70px -28px rgba(0,0,0,.7);
   --hd-bg: rgba(4,15,19,.45); --hd-line: rgba(255,255,255,.1); --hd-fg: #EAF2F1; --hd-sub: rgba(234,242,241,.65);
   --hero-fg: #fff; --hero-hl: #fff; --hero-sub: rgba(234,242,241,.85); --st-fg: #fff; --st-sub: rgba(234,242,241,.7);
 }
-.prev:is([data-look="night"], [data-look="neon"]) :is(h1, h2, h3, h4) { color: var(--ink); }
-.prev:is([data-look="night"], [data-look="neon"]) .prev-portalbar { background: #061418; }
-.prev:is([data-look="night"], [data-look="neon"]) .prev-show-stats .st { background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.16); }
-.prev:is([data-look="night"], [data-look="neon"]) .prev-show-stage .tile { background: rgba(255,255,255,.92); border-color: rgba(255,255,255,.9); -webkit-backdrop-filter: none; backdrop-filter: none; }
-.prev:is([data-look="night"], [data-look="neon"]) .prev-show-logoWrap::before { background: rgba(255,255,255,.94); border-color: rgba(255,255,255,.9); -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: 0 20px 60px rgba(0,0,0,.45); }
-.prev:is([data-look="night"], [data-look="neon"]) .prev-fcard, .prev:is([data-look="night"], [data-look="neon"]) .prev-card, .prev:is([data-look="night"], [data-look="neon"]) .prev-scard { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.12); }
-.prev:is([data-look="night"], [data-look="neon"]) .prev-fcard:hover, .prev:is([data-look="night"], [data-look="neon"]) .prev-scard:hover { box-shadow: 0 16px 30px rgba(0,0,0,.35); }
-.prev:is([data-look="night"], [data-look="neon"]) .prev-fcard .ghost { opacity: .18; color: #fff; }
-.prev:is([data-look="night"], [data-look="neon"]) .prev-arrowc { border-color: rgba(255,255,255,.25); color: #fff; }
-.prev:is([data-look="night"], [data-look="neon"]) .prev-lp { background: linear-gradient(170deg, rgba(255,255,255,.09) 30%, rgba(255,255,255,.04) 100%); border-color: rgba(255,255,255,.12); color: #EAF2F1; }
-.prev:is([data-look="night"], [data-look="neon"]) .prev-lp::after { background: linear-gradient(180deg, transparent, rgba(6,24,29,.9)); }
-.prev:is([data-look="night"], [data-look="neon"]) .prev-lp .wm img { mix-blend-mode: screen; opacity: .28; filter: grayscale(.2); }
-.prev:is([data-look="night"], [data-look="neon"]) .prev-input { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.14); color: #EAF2F1; }
-.prev:is([data-look="night"], [data-look="neon"]) .prev-input::placeholder { color: rgba(234,242,241,.55); }
-.prev:is([data-look="night"], [data-look="neon"]) .prev-chip { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.14); color: #EAF2F1; }
-.prev:is([data-look="night"], [data-look="neon"]) .prev-chip.on { background: var(--teal); border-color: var(--teal); }
-.prev:is([data-look="night"], [data-look="neon"]) .btnGhost { color: #EAF2F1; border-color: #EAF2F1; }
-.prev:is([data-look="night"], [data-look="neon"]) .btnGhost:hover { background: #EAF2F1; color: #0A2227; }
-.prev:is([data-look="night"], [data-look="neon"]) .prev-show-chip { color: #BFE9DF; background: rgba(31,138,120,.2); }
+.prev[data-look="night"] :is(h1, h2, h3, h4) { color: var(--ink); }
+.prev[data-look="night"] .prev-portalbar { background: #061418; }
+.prev[data-look="night"] .prev-show-stats .st { background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.16); }
+.prev[data-look="night"] .prev-show-stage .tile { background: rgba(255,255,255,.92); border-color: rgba(255,255,255,.9); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.prev[data-look="night"] .prev-show-logoWrap::before { background: rgba(255,255,255,.94); border-color: rgba(255,255,255,.9); -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: 0 20px 60px rgba(0,0,0,.45); }
+.prev[data-look="night"] .prev-fcard, .prev[data-look="night"] .prev-card, .prev[data-look="night"] .prev-scard { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.12); }
+.prev[data-look="night"] .prev-fcard:hover, .prev[data-look="night"] .prev-scard:hover { box-shadow: 0 16px 30px rgba(0,0,0,.35); }
+.prev[data-look="night"] .prev-fcard .ghost { opacity: .18; color: #fff; }
+.prev[data-look="night"] .prev-arrowc { border-color: rgba(255,255,255,.25); color: #fff; }
+.prev[data-look="night"] .prev-lp { background: linear-gradient(170deg, rgba(255,255,255,.09) 30%, rgba(255,255,255,.04) 100%); border-color: rgba(255,255,255,.12); color: #EAF2F1; }
+.prev[data-look="night"] .prev-lp::after { background: linear-gradient(180deg, transparent, rgba(6,24,29,.9)); }
+.prev[data-look="night"] .prev-lp .wm img { mix-blend-mode: screen; opacity: .28; filter: grayscale(.2); }
+.prev[data-look="night"] .prev-input { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.14); color: #EAF2F1; }
+.prev[data-look="night"] .prev-input::placeholder { color: rgba(234,242,241,.55); }
+.prev[data-look="night"] .prev-chip { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.14); color: #EAF2F1; }
+.prev[data-look="night"] .prev-chip.on { background: var(--teal); border-color: var(--teal); }
+.prev[data-look="night"] .btnGhost { color: #EAF2F1; border-color: #EAF2F1; }
+.prev[data-look="night"] .btnGhost:hover { background: #EAF2F1; color: #0A2227; }
+.prev[data-look="night"] .prev-show-chip { color: #BFE9DF; background: rgba(31,138,120,.2); }
 
-/* ── 4 · Neon: the neon illustration style in the brand palette (shares the night rules above) ── */
-.prev[data-look="neon"] {
-  --cream: #0B1E23; --ink: #EAF2F1; --muted: #A9C4C0; --card: rgba(255,255,255,.06); --line: rgba(47,208,180,.18);
-  --teald: #9FE8DA; --ttint: rgba(31,138,120,.2); --oranged: #FFB45C; --otint: rgba(244,150,30,.16);
-  --g-bg: rgba(10,31,36,.6); --g-line: rgba(47,208,180,.24); --g-blur: 20px; --g-shadow: 0 0 0 1px rgba(244,150,30,.06), 0 30px 70px -28px rgba(0,0,0,.8);
-  --hd-bg: rgba(8,24,28,.5); --hd-line: rgba(47,208,180,.18); --hd-fg: #EAF2F1; --hd-sub: #9FE8DA;
-  --hero-fg: #fff; --hero-hl: #9FE8DA; --hero-sub: rgba(234,242,241,.85); --st-fg: #fff; --st-sub: rgba(234,242,241,.7);
-}
-.prev[data-look="neon"] .prev-portalbar { background: #061418; }
-.prev[data-look="neon"] .prev-show-h1 .hl::after { background: var(--orange); box-shadow: 0 0 18px rgba(244,150,30,.75); }
-.prev[data-look="neon"] .prev-show-stats .st { background: rgba(10,31,36,.62); border-color: rgba(47,208,180,.24); box-shadow: 0 0 24px -6px rgba(47,208,180,.35); }
-.prev[data-look="neon"] .prev-show-logoWrap::before { box-shadow: 0 0 60px rgba(47,208,180,.45), 0 0 120px rgba(244,150,30,.3); }
-.prev[data-look="neon"] .prev-section > .prev-c, .prev[data-look="neon"] .prev-footer > .prev-c { box-shadow: var(--g-shadow), 0 0 40px -10px rgba(47,208,180,.25); }
-.prev[data-look="neon"] .btnO { box-shadow: 0 6px 0 var(--oranged), 0 0 24px rgba(244,150,30,.55); }
-.prev[data-look="neon"] .prev-lp::after { background: linear-gradient(180deg, transparent, rgba(10,31,36,.92)); }
-.prev[data-look="neon"] .prev-show-h1, .prev[data-look="neon"] .prev-show-sub { text-shadow: 0 2px 18px rgba(8,24,28,.85), 0 0 2px rgba(8,24,28,.9); }
-
-/* ── 3 · Paper-cut: daylight, ink text, paper-white sheets, glass on the search ── */
+/* ── 1 · Day (paper-cut): daylight, ink text, paper-white sheets, glass on the search ── */
 .prev[data-look="paper"] {
   --g-bg: rgba(255,255,255,.82); --g-line: rgba(255,255,255,.95); --g-blur: 10px; --g-shadow: 0 18px 44px -24px rgba(30,45,51,.35);
   --hd-bg: rgba(251,246,236,.72); --hd-line: rgba(30,45,51,.08); --hd-fg: var(--ink); --hd-sub: var(--teal);

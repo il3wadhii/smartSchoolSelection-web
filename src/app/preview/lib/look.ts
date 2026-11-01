@@ -1,12 +1,12 @@
 // Visual "look" of the parents' site, for the glass + Kuwait-skyline test.
 //   current — the live Orbit design (no skyline)
-//   dusk    — sunset skyline, light glass
-//   night   — night skyline, dark glass
-//   paper   — daylight paper-cut skyline, glass on the search only
-//   neon    — indigo night, glowing neon outlines, mirrored in water
-// Stored per browser; also settable with ?look=dusk|night|paper|current.
-export type Look = 'current' | 'dusk' | 'night' | 'paper' | 'neon'
-export const LOOKS: Look[] = ['current', 'dusk', 'night', 'paper', 'neon']
+//   paper   — DAY: daylight paper-cut skyline, glass on the search only
+//   dusk    — DUSK: sunset skyline, light glass
+//   night   — NIGHT: night skyline, dark glass
+// All three use the brand palette only (teal, orange, navy, cream).
+// Stored per browser; also settable with ?look=paper|dusk|night|current.
+export type Look = 'current' | 'paper' | 'dusk' | 'night'
+export const LOOKS: Look[] = ['current', 'paper', 'dusk', 'night']
 const KEY = 'ssc-look'
 const EVT = 'ssc-look-change'
 

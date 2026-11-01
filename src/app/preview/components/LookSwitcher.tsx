@@ -5,7 +5,7 @@ import { Look, readLook, applyLook } from '../lib/look'
 
 // Floating test switch (bottom-left) between the current design and the three
 // skyline looks. Remove once a look is chosen.
-const LABELS: Record<Look, string> = { current: 'Current', dusk: '1 Dusk', night: '2 Night', paper: '3 Paper', neon: '4 Neon' }
+const LABELS: Record<Look, string> = { current: 'Current', paper: '1 Day', dusk: '2 Dusk', night: '3 Night' }
 
 export default function LookSwitcher() {
   const [look, setLook] = useState<Look>('current')
