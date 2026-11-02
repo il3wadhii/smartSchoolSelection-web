@@ -37,7 +37,7 @@ export default function PrevHeader() {
           ) : (
             <>
               <Link href="/preview/login" className="prev-signin">Sign in</Link>
-              <Link href="/preview/signup" className="btnT">Get started</Link>
+              <Link href="/preview/signup" className="btnT">Sign up free</Link>
             </>
           )}
         </div>

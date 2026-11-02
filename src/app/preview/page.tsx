@@ -8,38 +8,9 @@ import { matchesGradeFilter, GradeFilterKey, GRADE_CHIPS } from '@/lib/stages'
 import PartnerMarquee from './components/PartnerMarquee'
 import PrevSchoolCard from './components/PrevSchoolCard'
 import OrbitStage from './components/OrbitStage'
-import {
-  Map as MapIcon, Scale, Wallet, Star, ArrowUpRight, ArrowRight,
-  GraduationCap, Search, Check, MapPin, HandCoins,
-} from 'lucide-react'
+import { Map as MapIcon, ArrowRight, Search, Check } from 'lucide-react'
 
-function initials(name: string) {
-  return name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase()
-}
-
-// Eased count-up for the hero stats; snaps straight to the target when the
-// user prefers reduced motion.
-function useCountUp(target: number, ms = 1400) {
-  const [n, setN] = useState(0)
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setN(target)
-      return
-    }
-    let raf = 0
-    const t0 = performance.now()
-    const tick = (t: number) => {
-      const p = Math.min(1, (t - t0) / ms)
-      setN(Math.round(target * (1 - Math.pow(1 - p, 3))))
-      if (p < 1) raf = requestAnimationFrame(tick)
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [target, ms])
-  return n
-}
-
-const H1_WORDS = ['The', 'smart', 'way', 'to', 'find', 'the']
+const H1_WORDS = ['Find', 'the']
 
 const REVIEWS = [
   { n: 'Noura A.', a: 'Parent in Salmiya', t: 'I compared 6 schools and their fees in one evening. Saved me weeks of phone calls.' },
@@ -94,10 +65,6 @@ export default function PreviewHome() {
     [schools, search, grade, seatsOnly]
   )
 
-  const nSchools = useCountUp(totals?.schools ?? 39)
-  const nReviews = useCountUp(totals?.reviews ?? 210)
-  const nStages = useCountUp(5)
-  const nFree = useCountUp(100)
 
   return (
     <>
@@ -118,32 +85,25 @@ export default function PreviewHome() {
               Every preschool, KG and school — fees, curricula, live seats and real parent reviews. In one place.
             </p>
 
-            <div className="prev-show-stats">
-              <div className="st" style={{ ['--i' as never]: 0 }}>
-                <span className="ic"><GraduationCap size={20} /></span>
-                <b>{nSchools}+</b><small>schools listed</small>
+            <div className="prev-hero-search">
+              <label className="prev-search" htmlFor="school-search">
+                <Search size={18} aria-hidden="true" />
+                <input id="school-search" className="prev-input" placeholder="School name or area, e.g. Salwa" value={search} onChange={(e) => setSearch(e.target.value)} />
+              </label>
+              <div className="prev-chips">
+                {GRADE_CHIPS.map((c) => (
+                  <button key={c.key} type="button" className={`prev-chip ${grade === c.key ? 'on' : ''}`} aria-pressed={grade === c.key} onClick={() => setGrade(grade === c.key ? null : c.key)}>
+                    {c.label}
+                  </button>
+                ))}
+                <button type="button" className={`prev-chip ${seatsOnly ? 'on' : ''}`} aria-pressed={seatsOnly} onClick={() => setSeatsOnly((v) => !v)}>
+                  <Check size={13} style={{ verticalAlign: '-2px' }} /> Seats available
+                </button>
               </div>
-              <div className="st" style={{ ['--i' as never]: 1 }}>
-                <span className="ic" style={{ background: 'var(--otint)', color: 'var(--oranged)' }}><Star size={20} /></span>
-                {totals && totals.reviews < 25 ? (
-                  <><b><Check size={24} strokeWidth={3.5} style={{ verticalAlign: '-2px' }} /></b><small>real parent reviews</small></>
-                ) : (
-                  <><b>{nReviews}+</b><small>parent reviews</small></>
-                )}
+              <div className="prev-hero-actions">
+                <a href="#schools" className="btnO">Show {loading ? '' : `${filtered.length} `}schools <ArrowRight size={18} /></a>
+                <Link href="/preview/map" className="btnGhost"><MapIcon size={17} /> Explore the map</Link>
               </div>
-              <div className="st" style={{ ['--i' as never]: 2 }}>
-                <span className="ic"><MapPin size={20} /></span>
-                <b>{nStages}</b><small>stages covered</small>
-              </div>
-              <div className="st" style={{ ['--i' as never]: 3 }}>
-                <span className="ic" style={{ background: 'var(--otint)', color: 'var(--oranged)' }}><HandCoins size={20} /></span>
-                <b>{nFree}%</b><small>free for parents</small>
-              </div>
-            </div>
-
-            <div className="prev-show-cta">
-              <Link href="#schools" className="btnO">Find schools <ArrowRight size={18} /></Link>
-              <Link href="/preview/map" className="btnGhost"><MapIcon size={17} /> Explore the map</Link>
             </div>
           </div>
         </div>
@@ -153,27 +113,18 @@ export default function PreviewHome() {
       <section className="prev-section">
         <div className="prev-c">
           <h2 className="prev-h2">An <span className="u">easier way</span> to choose a school</h2>
-          <div className="prev-grid3">
-            <Link href="/preview/map" className="prev-fcard">
-              <span className="ghost" aria-hidden="true"><MapIcon size={150} /></span>
-              <div className="prev-ficon" style={{ background: 'var(--ttint)', color: 'var(--teald)' }}><MapIcon size={24} /></div>
+          <div className="prev-tools">
+            <Link href="/preview/map" className="prev-tool">
               <h3>Map</h3>
-              <p>Explore every school on an interactive map and find what&apos;s near you.</p>
-              <span className="prev-arrowc"><ArrowUpRight size={17} /></span>
+              <p>Every school on one map, with what is near your home or your work.</p>
             </Link>
-            <Link href="/preview/compare" className="prev-fcard">
-              <span className="ghost" aria-hidden="true"><Scale size={150} /></span>
-              <div className="prev-ficon" style={{ background: 'var(--otint)', color: 'var(--oranged)' }}><Scale size={24} /></div>
+            <Link href="/preview/compare" className="prev-tool">
               <h3>Compare</h3>
-              <p>Put 2–4 schools side by side and compare them grade by grade.</p>
-              <span className="prev-arrowc"><ArrowUpRight size={17} /></span>
+              <p>Two to four schools side by side, fees and seats grade by grade.</p>
             </Link>
-            <Link href="#schools" className="prev-fcard">
-              <span className="ghost" aria-hidden="true"><Wallet size={150} /></span>
-              <div className="prev-ficon" style={{ background: 'var(--ttint)', color: 'var(--teald)' }}><Wallet size={24} /></div>
-              <h3>Fees</h3>
-              <p>See real annual fees by grade and live seat availability.</p>
-              <span className="prev-arrowc"><ArrowUpRight size={17} /></span>
+            <Link href="#schools" className="prev-tool">
+              <h3>Fees and seats</h3>
+              <p>Real annual fees for each grade and the places open right now, kept up to date by the schools.</p>
             </Link>
           </div>
         </div>
@@ -183,28 +134,12 @@ export default function PreviewHome() {
       <section className="prev-section" id="schools">
         <div className="prev-c">
           <h2 className="prev-h2">Find <span className="u">your school</span></h2>
-          <p className="prev-sub">Browse every school in Kuwait — search by name or area, or filter by grade.</p>
-          <div style={{ display: 'flex', gap: 10, maxWidth: 520, margin: '0 auto' }}>
-            <span className="prev-search">
-              <Search size={17} />
-              <input className="prev-input" placeholder="Search name or area…" value={search} onChange={(e) => setSearch(e.target.value)} />
-            </span>
-          </div>
-          <div className="prev-chips" style={{ justifyContent: 'center' }}>
-            {GRADE_CHIPS.map((c) => (
-              <button key={c.key} className={`prev-chip ${grade === c.key ? 'on' : ''}`} onClick={() => setGrade(grade === c.key ? null : c.key)}>
-                {c.label}
-              </button>
-            ))}
-            <button className={`prev-chip ${seatsOnly ? 'on' : ''}`} onClick={() => setSeatsOnly((v) => !v)}>
-              <Check size={13} style={{ verticalAlign: '-2px' }} /> Seats available
-            </button>
-          </div>
+          <p className="prev-sub">Every private school in Kuwait. Use the search above to narrow the list.</p>
           {loading ? (
             <div className="prev-spinner" />
           ) : (
             <>
-              <p style={{ textAlign: 'center', color: 'var(--muted)', fontWeight: 700, fontSize: 13, marginBottom: 18 }}>
+              <p className="prev-count">
                 {filtered.length} school{filtered.length === 1 ? '' : 's'}
               </p>
               <div className="prev-sgrid">
@@ -235,7 +170,7 @@ export default function PreviewHome() {
               </svg>
             </div>
             <div className="prev-bstat" style={{ background: 'var(--orange)', color: '#3a2305' }}><b>{totals?.schools ?? 39}</b><span>schools listed</span></div>
-            <div className="prev-bstat" style={{ background: 'var(--teal)' }}><b>100%</b><span>free for parents</span></div>
+            <div className="prev-bstat" style={{ background: 'var(--teald)' }}><b>100%</b><span>free for parents</span></div>
             <div className="prev-bstat" style={{ background: 'var(--teald)', gridColumn: 'span 2' }}><b>Live</b><span>seats &amp; fees, updated by the schools themselves</span></div>
           </div>
         </div>
@@ -244,18 +179,20 @@ export default function PreviewHome() {
       {/* ── Parent reviews ───────────────────────────────── */}
       <section className="prev-section">
         <div className="prev-c">
-          <h2 className="prev-h2"><span className="u">Parent reviews</span></h2>
-          <div className="prev-grid3">
-            {REVIEWS.map((r) => (
-              <div key={r.n} className="prev-testi">
-                <div className="prev-trow">
-                  <span className="av">{initials(r.n)}</span>
-                  <div><b>{r.n}</b><small>{r.a}</small></div>
-                </div>
-                <div className="prev-stars">{[0, 1, 2, 3, 4].map((i) => <Star key={i} size={14} fill="currentColor" />)}</div>
-                <p>{r.t}</p>
-              </div>
-            ))}
+          <h2 className="prev-h2">What <span className="u">parents say</span></h2>
+          <div className="prev-reviews">
+            <blockquote className="lead">
+              <p>“{REVIEWS[0].t}”</p>
+              <footer>{REVIEWS[0].n} · {REVIEWS[0].a}</footer>
+            </blockquote>
+            <div className="rest">
+              {REVIEWS.slice(1).map((r) => (
+                <blockquote key={r.n}>
+                  <p>“{r.t}”</p>
+                  <footer>{r.n} · {r.a}</footer>
+                </blockquote>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -273,8 +210,11 @@ export default function PreviewHome() {
       <section className="prev-section">
         <div className="prev-c">
           <div className="prev-cta">
-            <h2>Ready to find <span className="o">the right school?</span><br />Join thousands of Kuwait parents.</h2>
-            <Link href="#schools" className="btnO">Get started <ArrowRight size={18} /></Link>
+            <div>
+              <h2>Ready to find <span className="o">the right school?</span></h2>
+              <p>Free for parents, kept up to date by the schools.</p>
+            </div>
+            <Link href="#schools" className="btnO">Browse the schools <ArrowRight size={18} /></Link>
           </div>
         </div>
       </section>
