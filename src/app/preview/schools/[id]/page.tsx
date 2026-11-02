@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
+import { readParam, writeParam } from '../../lib/urlState'
 import Link from 'next/link'
 import { schoolsAPI, getImageUrl } from '@/lib/api'
 import { SchoolDetails, Rating } from '@/types'
@@ -21,6 +22,9 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: 'fees', label: 'Fees' },
   { key: 'reviews', label: 'Reviews' },
 ]
+
+const fmtKD = new Intl.NumberFormat('en-KW', { maximumFractionDigits: 0 })
+const fmtDate = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 
 function initials(name: string) {
   return name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase()
@@ -46,6 +50,21 @@ export default function PreviewSchoolDetail() {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<TabKey>('info')
   const [open, setOpen] = useState<Record<string, boolean>>({})
+
+  // ?tab=fees deep-links a tab; the active tab is written back without navigation.
+  useEffect(() => {
+    const t = readParam('tab')
+    if (TABS.some((x) => x.key === t)) setTab(t as TabKey)
+  }, [])
+  const pickTab = (k: TabKey) => { setTab(k); writeParam('tab', k === 'info' ? null : k) }
+  const onTabKey = (e: React.KeyboardEvent<HTMLButtonElement>, i: number) => {
+    const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : e.key === 'Home' ? -i : e.key === 'End' ? TABS.length - 1 - i : 0
+    if (!d) return
+    e.preventDefault()
+    const n = (i + d + TABS.length) % TABS.length
+    pickTab(TABS[n].key)
+    ;(e.currentTarget.parentElement?.children[n] as HTMLElement | undefined)?.focus()
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -98,7 +117,7 @@ export default function PreviewSchoolDetail() {
         <div className="prev-dhero">
           {logo && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img className="bg" src={logo} alt={school.schoolName} />
+            <img className="bg" src={logo} alt="" width={1200} height={600} fetchPriority="high" />
           )}
           <span className="scrim" />
           <Link href="/preview#schools" className="prev-dback" aria-label="Back to schools"><ArrowLeft size={18} /></Link>
@@ -131,13 +150,14 @@ export default function PreviewSchoolDetail() {
 
         {/* Tabs */}
         <div className="prev-dtabs" role="tablist">
-          {TABS.map((t) => (
-            <button key={t.key} role="tab" aria-selected={tab === t.key} className={`prev-dtab${tab === t.key ? ' on' : ''}`} onClick={() => setTab(t.key)}>
+          {TABS.map((t, i) => (
+            <button key={t.key} type="button" id={`tab-${t.key}`} role="tab" aria-selected={tab === t.key} aria-controls={`panel-${t.key}`} tabIndex={tab === t.key ? 0 : -1} className={`prev-dtab${tab === t.key ? ' on' : ''}`} onClick={() => pickTab(t.key)} onKeyDown={(e) => onTabKey(e, i)}>
               {t.label}
             </button>
           ))}
         </div>
 
+        <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
         {/* ── INFO ── */}
         {tab === 'info' && (
           <>
@@ -213,21 +233,21 @@ export default function PreviewSchoolDetail() {
                   const isOpen = !!open[g.key]
                   return (
                     <div key={g.key} className="prev-accitem">
-                      <button className="prev-acchead" aria-expanded={isOpen} onClick={() => setOpen((o) => ({ ...o, [g.key]: !o[g.key] }))}>
+                      <button type="button" className="prev-acchead" aria-expanded={isOpen} aria-controls={`acc-${g.key}`} onClick={() => setOpen((o) => ({ ...o, [g.key]: !o[g.key] }))}>
                         <span className="prev-acctitle">{g.label}<span className="prev-accsub">{g.rows.length} grade{g.rows.length === 1 ? '' : 's'}</span></span>
                         <span className="prev-accright">
-                          {g.feeFrom !== null && <span>from KD {g.feeFrom.toLocaleString()}</span>}
+                          {g.feeFrom !== null && <span>from KD {fmtKD.format(g.feeFrom)}</span>}
                           {g.seatsTotal !== null && <span className="seats">{g.seatsTotal} seats</span>}
                           <ChevronDown size={18} className={isOpen ? 'rot' : ''} />
                         </span>
                       </button>
                       {isOpen && (
-                        <div className="prev-accbody">
+                        <div className="prev-accbody" id={`acc-${g.key}`}>
                           <div className="prev-gradehead"><span>Grade</span><span>Fees</span><span>Open seats</span></div>
                           {g.rows.map((r) => (
                             <div key={r.grade} className="prev-graderow">
                               <span className="g">{r.grade}</span>
-                              <span className="f">{r.fees !== null ? `KD ${r.fees.toLocaleString()}` : '—'}</span>
+                              <span className="f">{r.fees !== null ? `KD ${fmtKD.format(r.fees)}` : '—'}</span>
                               <span className="s">{r.seats === null ? '—' : r.seats > 0 ? <span className="ok">{r.seats} open</span> : <span className="full">Full</span>}</span>
                             </div>
                           ))}
@@ -261,7 +281,7 @@ export default function PreviewSchoolDetail() {
                     <Stars value={Number(r.rating) || 0} />
                   </div>
                   {r.comment && <p>{r.comment}</p>}
-                  {r.createdOn && <span className="date">{new Date(r.createdOn).toLocaleDateString()}</span>}
+                  {r.createdOn && <span className="date">{fmtDate.format(new Date(r.createdOn))}</span>}
                 </div>
               ))
             ) : (
@@ -269,6 +289,7 @@ export default function PreviewSchoolDetail() {
             )}
           </>
         )}
+        </div>
       </div>
     </section>
   )

@@ -9,7 +9,7 @@
 .prev-theme:hover { background: var(--tg-bg-hover); }
 .prev-theme:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
 .prev[data-look="day"] { --tg-bg: rgba(255,255,255,.7); --tg-bg-hover: #fff; --tg-knob: var(--orange); --tg-knob-fg: #3a2305; }
-.prev[data-look="night"] { --tg-bg: rgba(255,255,255,.12); --tg-bg-hover: rgba(255,255,255,.2); --tg-knob: #F8CFA0; --tg-knob-fg: #15232E; }
+.prev[data-look="night"] { color-scheme: dark; --tg-bg: rgba(255,255,255,.12); --tg-bg-hover: rgba(255,255,255,.2); --tg-knob: #F8CFA0; --tg-knob-fg: #15232E; }
 @media (max-width: 480px) { .prev-theme .lbl { display: none; } .prev-theme { padding-right: 4px; } }
 /* the still backdrop + everything else above it */
 .prev-skyline { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; pointer-events: none; }

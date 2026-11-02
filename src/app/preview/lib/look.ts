@@ -21,9 +21,12 @@ export function readLook(): Look {
   return h >= 6 && h < 18 ? 'day' : 'night'
 }
 
+export const LOOK_BG: Record<Look, string> = { day: '#E6F2EE', night: '#0A1A20' }
+
 export function applyLook(look: Look) {
   const root = document.querySelector<HTMLElement>('.prev')
   if (root) root.setAttribute('data-look', look)
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', LOOK_BG[look])
   try { localStorage.setItem(KEY, look) } catch {}
   window.dispatchEvent(new CustomEvent(EVT, { detail: look }))
 }
@@ -35,4 +38,4 @@ export function onLook(fn: (l: Look) => void): () => void {
 }
 
 /** Inline, runs before paint: picks the theme the same way readLook() does. */
-export const THEME_BOOT_SCRIPT = `(function(){try{var r=document.currentScript.parentElement;var q=new URLSearchParams(location.search).get('theme');var s=null;try{s=localStorage.getItem('${KEY}')}catch(e){}var v=(q==='day'||q==='night')?q:(s==='day'||s==='night')?s:((new Date().getHours()>=6&&new Date().getHours()<18)?'day':'night');r.setAttribute('data-look',v)}catch(e){}})()`
+export const THEME_BOOT_SCRIPT = `(function(){try{var r=document.currentScript.parentElement;var q=new URLSearchParams(location.search).get('theme');var s=null;try{s=localStorage.getItem('${KEY}')}catch(e){}var v=(q==='day'||q==='night')?q:(s==='day'||s==='night')?s:((new Date().getHours()>=6&&new Date().getHours()<18)?'day':'night');r.setAttribute('data-look',v);var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',v==='night'?'#0A1A20':'#E6F2EE')}catch(e){}})()`

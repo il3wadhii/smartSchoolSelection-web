@@ -21,6 +21,7 @@ interface ComparisonSchool {
 }
 
 const GRADE_KEY = 'compare_grade'
+const fmtKD = new Intl.NumberFormat('en-KW', { maximumFractionDigits: 0 })
 const STAGE_DOT: Record<StageKey, string> = { nur: '#F4961E', kg: '#5DCAA5', pri: '#1F8A78', int: '#3E7CB1', high: '#155E51' }
 
 function initials(name: string) {
@@ -128,7 +129,7 @@ export default function PreviewCompare() {
       <div className="prev-c">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
           <h2 className="prev-h2" style={{ textAlign: 'left', margin: 0 }}>Compare</h2>
-          <button onClick={clearCompare} style={{ background: 'none', border: 'none', color: 'var(--oranged)', fontWeight: 800, cursor: 'pointer', fontSize: 13 }}>Clear all</button>
+          <button type="button" className="prev-clearall" onClick={() => { if (window.confirm('Remove all schools from the comparison?')) clearCompare() }}>Clear all</button>
         </div>
         <p className="prev-sub" style={{ textAlign: 'left', margin: '6px 0 16px' }}>
           Fees and seats shown for <b style={{ color: 'var(--teal)' }}>{grade}</b>
@@ -154,10 +155,10 @@ export default function PreviewCompare() {
                   const logo = getImageUrl(s.schoolImgURL)
                   return (
                     <div key={s.schoolID} className="prev-chead">
-                      <button className="rm" onClick={() => removeCompare(s.schoolID)} aria-label={`Remove ${s.schoolName}`}><X size={14} /></button>
+                      <button type="button" className="rm" onClick={() => removeCompare(s.schoolID)} aria-label={`Remove ${s.schoolName}`}><X size={14} /></button>
                       {logo ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={logo} alt={s.schoolName} />
+                        <img src={logo} alt="" width={56} height={56} decoding="async" />
                       ) : (
                         <span className="mono">{initials(s.schoolName)}</span>
                       )}
@@ -168,7 +169,7 @@ export default function PreviewCompare() {
               </div>
 
               {[
-                { k: `Fees (${grade})`, r: (s: ComparisonSchool) => { const f = feeFor(s); if (f === null) return '—'; const t = `KD ${f.toLocaleString()}`; return bestFee !== null && f === bestFee ? <Good>{t}</Good> : t } },
+                { k: `Fees (${grade})`, r: (s: ComparisonSchool) => { const f = feeFor(s); if (f === null) return '—'; const t = `KD ${fmtKD.format(f)}`; return bestFee !== null && f === bestFee ? <Good>{t}</Good> : t } },
                 { k: `Seats (${grade})`, r: (s: ComparisonSchool) => { const v = seatsFor(s); if (v === null) return '—'; if (v === 0) return <span style={{ color: 'var(--oranged)' }}>Full</span>; return bestSeats !== null && v === bestSeats ? <Good>{v}</Good> : v } },
                 { k: 'Rating', r: (s: ComparisonSchool) => { const v = Number(s.rating?.average) || 0; if (!s.rating?.totalReviews) return '—'; const t = `★ ${v}`; return v === bestRating && v > 0 ? <Good>{t}</Good> : t } },
                 { k: 'Class size', r: (s: ComparisonSchool) => { const n = Number(s.classSize); if (!n) return '—'; return n === bestSize ? <Good>{n}</Good> : n } },

@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
+import { readFilters, writeFilters } from '../lib/urlState'
 import { useRouter } from 'next/navigation'
 import { schoolsAPI, getImageUrl } from '@/lib/api'
 import { School } from '@/types'
@@ -34,6 +36,18 @@ export default function PreviewMap() {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [locating, setLocating] = useState(false)
   const [locMsg, setLocMsg] = useState('')
+  const [urlReady, setUrlReady] = useState(false)
+
+  useEffect(() => {
+    const f = readFilters()
+    if (f.q) setSearch(f.q)
+    if (f.grade) setGrade(f.grade)
+    if (f.seats) setSeatsOnly(true)
+    setUrlReady(true)
+  }, [])
+  useEffect(() => {
+    if (urlReady) writeFilters({ q: search, grade, seats: seatsOnly })
+  }, [urlReady, search, grade, seatsOnly])
 
   useEffect(() => {
     let cancelled = false
@@ -103,37 +117,39 @@ export default function PreviewMap() {
         <p className="prev-sub">Pan and zoom to find schools near you — tap a pin or a card for details.</p>
 
         <div className="prev-filterbar" style={{ display: 'flex', gap: 10 }}>
-          <span className="prev-search">
-            <Search size={17} />
-            <input className="prev-input" placeholder="Search schools, areas…" value={search} onChange={(e) => setSearch(e.target.value)} />
-          </span>
+          <label className="prev-search" htmlFor="map-search">
+            <Search size={17} aria-hidden="true" />
+            <input id="map-search" name="q" type="search" className="prev-input" placeholder="Search schools or areas, e.g. Salwa…" value={search} onChange={(e) => setSearch(e.target.value)} autoComplete="off" spellCheck={false} enterKeyHint="search" aria-label="Search schools or areas" />
+          </label>
         </div>
         <div className="prev-chips">
           {GRADE_CHIPS.map((c) => (
-            <button key={c.key} className={`prev-chip ${grade === c.key ? 'on' : ''}`} onClick={() => setGrade(grade === c.key ? null : c.key)}>
+            <button key={c.key} type="button" className={`prev-chip ${grade === c.key ? 'on' : ''}`} aria-pressed={grade === c.key} onClick={() => setGrade(grade === c.key ? null : c.key)}>
               {c.label}
             </button>
           ))}
-          <button className={`prev-chip ${seatsOnly ? 'on' : ''}`} onClick={() => setSeatsOnly((v) => !v)}>
+          <button type="button" className={`prev-chip ${seatsOnly ? 'on' : ''}`} aria-pressed={seatsOnly} onClick={() => setSeatsOnly((v) => !v)}>
             <Check size={13} style={{ verticalAlign: '-2px' }} /> Seats available
           </button>
         </div>
 
         <div className="prev-maprow">
           <div className="prev-maplist">
-            <p style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--muted)' }}>{filtered.length} schools</p>
+            <p style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--muted)' }} aria-live="polite">{filtered.length} schools</p>
             {filtered.map((s) => {
               const logo = getImageUrl(s.schoolImgURL)
               return (
-                <div
+                <Link
                   key={s.schoolID}
+                  href={`/preview/schools/${s.schoolID}`}
                   className={`prev-maplistcard ${selectedId === s.schoolID ? 'sel' : ''}`}
                   onMouseEnter={() => setSelectedId(s.schoolID)}
-                  onClick={() => router.push(`/preview/schools/${s.schoolID}`)}
+                  onFocus={() => setSelectedId(s.schoolID)}
+                  style={{ color: 'inherit', textDecoration: 'none' }}
                 >
                   {logo ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={logo} alt={s.schoolName} loading="lazy" />
+                    <img src={logo} alt="" width={46} height={46} loading="lazy" decoding="async" />
                   ) : (
                     <span className="mono">{initials(s.schoolName)}</span>
                   )}
@@ -144,7 +160,7 @@ export default function PreviewMap() {
                       <span className="prev-seatbadge"><Check size={11} /> Seats available</span>
                     )}
                   </div>
-                </div>
+                </Link>
               )
             })}
           </div>

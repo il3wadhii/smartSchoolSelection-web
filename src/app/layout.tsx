@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Nunito_Sans, Fraunces } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/contexts/AuthContext'
@@ -24,6 +24,12 @@ export const metadata: Metadata = {
   keywords: ['school', 'education', 'kuwait', 'compare schools', 'school fees', 'seat availability'],
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#E6F2EE',
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -31,6 +37,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+      </head>
       <body className={`${nunito.variable} ${fraunces.variable} font-sans`}>
         <AuthProvider>
           <CompareProvider>

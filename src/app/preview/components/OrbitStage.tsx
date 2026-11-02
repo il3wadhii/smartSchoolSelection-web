@@ -24,20 +24,20 @@ export default function OrbitStage({ schools }: { schools: School[] }) {
       <div className="orbit o1">
         {ring1.map((u, i) => (
           <span key={u} className="sat" style={{ ['--a' as never]: `${(i * 360) / Math.max(ring1.length, 1)}deg`, ['--r' as never]: 'var(--r1)' }}>
-            <span className="tile"><img src={u} alt="" loading="lazy" /></span>
+            <span className="tile"><img src={u} alt="" width={56} height={56} loading="lazy" decoding="async" /></span>
           </span>
         ))}
       </div>
       <div className="orbit o2 rev">
         {ring2.map((u, i) => (
           <span key={u} className="sat" style={{ ['--a' as never]: `${(i * 360) / Math.max(ring2.length, 1)}deg`, ['--r' as never]: 'var(--r2)' }}>
-            <span className="tile"><img src={u} alt="" loading="lazy" /></span>
+            <span className="tile"><img src={u} alt="" width={56} height={56} loading="lazy" decoding="async" /></span>
           </span>
         ))}
       </div>
       <span className="prev-show-logoWrap">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.png?v=2" alt="Smart School Selection" />
+        <img src="/logo.png?v=2" alt="Smart School Selection" width={150} height={150} fetchPriority="high" />
       </span>
     </div>
   )

@@ -11,7 +11,7 @@ function Tile({ s }: { s: School }) {
     <span className="prev-plogo" title={s.schoolName}>
       {src ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt={s.schoolName} loading="lazy" />
+        <img src={src} alt={s.schoolName} width={64} height={64} loading="lazy" decoding="async" />
       ) : (
         <span className="pmono">{initials(s.schoolName)}</span>
       )}

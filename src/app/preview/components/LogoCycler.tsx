@@ -40,7 +40,7 @@ export default function LogoCycler({ schools }: { schools: School[] }) {
       <div className="tile">
         {logos.map((src, idx) => (
           // eslint-disable-next-line @next/next/no-img-element
-          <img key={idx} src={src} alt="" className={idx === i ? 'on' : ''} />
+          <img key={idx} src={src} alt="" width={200} height={200} loading={idx === 0 ? 'eager' : 'lazy'} decoding="async" className={idx === i ? 'on' : ''} />
         ))}
       </div>
     </div>

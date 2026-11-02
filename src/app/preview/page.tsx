@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { readFilters, writeFilters } from './lib/urlState'
 import Link from 'next/link'
 import { schoolsAPI, getImageUrl } from '@/lib/api'
 import { School } from '@/types'
@@ -43,6 +44,19 @@ export default function PreviewHome() {
   const [search, setSearch] = useState('')
   const [grade, setGrade] = useState<GradeFilterKey | null>(null)
   const [seatsOnly, setSeatsOnly] = useState(false)
+  const [urlReady, setUrlReady] = useState(false)
+
+  // Filters live in the URL (?q=&grade=&seats=1) so a filtered view can be shared or reloaded.
+  useEffect(() => {
+    const f = readFilters()
+    if (f.q) setSearch(f.q)
+    if (f.grade) setGrade(f.grade)
+    if (f.seats) setSeatsOnly(true)
+    setUrlReady(true)
+  }, [])
+  useEffect(() => {
+    if (urlReady) writeFilters({ q: search, grade, seats: seatsOnly })
+  }, [urlReady, search, grade, seatsOnly])
 
   const filtered = useMemo(
     () =>
@@ -88,7 +102,7 @@ export default function PreviewHome() {
             <div className="prev-hero-search">
               <label className="prev-search" htmlFor="school-search">
                 <Search size={18} aria-hidden="true" />
-                <input id="school-search" className="prev-input" placeholder="School name or area, e.g. Salwa" value={search} onChange={(e) => setSearch(e.target.value)} />
+                <input id="school-search" name="q" type="search" className="prev-input" placeholder="School name or area, e.g. Salwa…" value={search} onChange={(e) => setSearch(e.target.value)} autoComplete="off" spellCheck={false} enterKeyHint="search" />
               </label>
               <div className="prev-chips">
                 {GRADE_CHIPS.map((c) => (

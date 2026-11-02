@@ -13,7 +13,7 @@ export default function PrevHeader() {
       <div className="prev-c row">
         <Link href="/preview" className="prev-brand" aria-label="Smart School Selection home">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="prev-logoanim" src="/logo.png?v=2" alt="Smart School Selection logo" />
+          <img className="prev-logoanim" src="/logo.png?v=2" alt="Smart School Selection logo" width={52} height={52} fetchPriority="high" />
           <span className="wm">Smart School<small>SELECTION</small></span>
         </Link>
         <nav className="prev-nav">

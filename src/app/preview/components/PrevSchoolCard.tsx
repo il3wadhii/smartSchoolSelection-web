@@ -24,7 +24,7 @@ export default function PrevSchoolCard({ s }: { s: School }) {
       <div className="wm" aria-hidden="true">
         {logo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={logo} alt="" loading="lazy" />
+          <img src={logo} alt="" width={320} height={320} loading="lazy" decoding="async" />
         ) : (
           <span className="big">{(s.schoolName || 'S').trim()[0].toUpperCase()}</span>
         )}

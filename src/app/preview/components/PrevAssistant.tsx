@@ -7,6 +7,8 @@ import { useAuth } from '@/contexts/AuthContext'
 import { getBrowserLocation, UserLocation } from '@/lib/geo'
 import { MessageCircle, X, Send, Bot, Lock, ExternalLink, MapPin } from 'lucide-react'
 
+const fmtKD = new Intl.NumberFormat('en-KW', { maximumFractionDigits: 0 })
+
 const NEAR_KEYWORDS = /\b(near|nearest|closest|nearby|close to)\b|قريب|أقرب|بالقرب/i
 
 const SUGGESTIONS = [
@@ -24,8 +26,8 @@ function SchoolsTable({ schools, grade }: { schools: AssistantSchool[]; grade?: 
   )
   const feeCell = (s: AssistantSchool) => {
     if (!isAuthenticated) return acct
-    if (grade && s.fees !== null) return `${s.fees.toLocaleString()} KD`
-    if (s.feeRange) return `${s.feeRange.min.toLocaleString()}–${s.feeRange.max.toLocaleString()} KD`
+    if (grade && s.fees !== null) return `${fmtKD.format(s.fees)} KD`
+    if (s.feeRange) return `${fmtKD.format(s.feeRange.min)}–${fmtKD.format(s.feeRange.max)} KD`
     return '—'
   }
   const seatCell = (s: AssistantSchool) => {
@@ -133,13 +135,13 @@ export default function PrevAssistant() {
   return (
     <>
       {!open && (
-        <button className="prev-assist-fab" onClick={() => setOpen(true)} aria-label="Ask the school assistant">
+        <button type="button" className="prev-assist-fab" onClick={() => setOpen(true)} aria-label="Ask the school assistant" aria-haspopup="dialog">
           <MessageCircle size={24} />
         </button>
       )}
 
       {open && (
-        <div className="prev-assist-panel">
+        <div className="prev-assist-panel" role="dialog" aria-label="School assistant" onKeyDown={(e) => { if (e.key === 'Escape') setOpen(false) }}>
           <div className="prev-assist-head">
             <div className="who">
               <span className="ic"><Bot size={18} /></span>
@@ -150,6 +152,8 @@ export default function PrevAssistant() {
             </div>
             <div className="acts">
               <button
+                type="button"
+                aria-pressed={!!userLoc}
                 onClick={() => (userLoc ? setUserLoc(null) : requestLocation())}
                 className={`loc${userLoc ? ' on' : ''}${locating ? ' pulse' : ''}`}
                 title={userLoc ? 'Location shared — click to stop' : 'Share my location for "nearest" answers'}
@@ -157,16 +161,16 @@ export default function PrevAssistant() {
               >
                 <MapPin size={16} />
               </button>
-              <button onClick={() => setOpen(false)} aria-label="Close"><X size={18} /></button>
+              <button type="button" onClick={() => setOpen(false)} aria-label="Close assistant"><X size={18} /></button>
             </div>
           </div>
 
-          <div className="prev-assist-body">
+          <div className="prev-assist-body" aria-live="polite" aria-relevant="additions">
             {messages.length === 0 && (
               <div className="prev-assist-intro">
                 <p>Hi! Ask me anything about schools in Kuwait — areas, curricula, languages, fees and more.</p>
                 {SUGGESTIONS.map((s) => (
-                  <button key={s} onClick={() => send(s)} className="sugg">{s}</button>
+                  <button key={s} type="button" onClick={() => send(s)} className="sugg">{s}</button>
                 ))}
               </div>
             )}
@@ -184,22 +188,26 @@ export default function PrevAssistant() {
 
             {thinking && (
               <div className="prev-assist-row assistant">
-                <div className="bubble dots"><i /><i /><i /></div>
+                <div className="bubble dots" aria-label="Assistant is typing…"><i /><i /><i /></div>
               </div>
             )}
 
-            {error && <p className="prev-assist-err">{error}</p>}
+            {error && <p className="prev-assist-err" role="alert">{error}</p>}
             <div ref={bottomRef} />
           </div>
 
           <form className="prev-assist-input" onSubmit={(e) => { e.preventDefault(); send(input) }}>
             <input
+              name="question"
+              aria-label="Your question"
+              autoComplete="off"
+              enterKeyHint="send"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask about schools…"
+              placeholder="Ask about schools, e.g. British schools in Salwa…"
               maxLength={1000}
             />
-            <button type="submit" disabled={thinking || !input.trim()} aria-label="Send"><Send size={16} /></button>
+            <button type="submit" disabled={thinking || !input.trim()} aria-label="Send question"><Send size={16} /></button>
           </form>
         </div>
       )}

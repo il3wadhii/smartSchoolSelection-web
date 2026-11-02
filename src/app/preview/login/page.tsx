@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { authAPI } from '@/lib/api'
@@ -13,6 +13,7 @@ function LoginInner() {
   const [show, setShow] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const emailRef = useRef<HTMLInputElement>(null)
 
   const router = useRouter()
   const sp = useSearchParams()
@@ -37,7 +38,8 @@ function LoginInner() {
         throw new Error(r.message || 'Login failed')
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'Login failed. Please try again.')
+      setError(err.response?.data?.message || err.message || 'Login failed. Check your email and password, then try again.')
+      emailRef.current?.focus()
     } finally {
       setLoading(false)
     }
@@ -50,21 +52,21 @@ function LoginInner() {
       <div className="prev-c" style={{ maxWidth: 440 }}>
         <div style={{ textAlign: 'center', marginBottom: 18 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png?v=2" alt="Smart School Selection" style={{ width: 56, height: 56, borderRadius: 14, margin: '0 auto 12px' }} />
+          <img src="/logo.png?v=2" alt="Smart School Selection" width={56} height={56} fetchPriority="high" style={{ width: 56, height: 56, borderRadius: 14, margin: '0 auto 12px' }} />
           <h1 className="prev-h2" style={{ margin: 0 }}>Welcome <span className="u">back</span></h1>
           <p className="prev-sub" style={{ margin: '6px auto 0' }}>Sign in to see fees, live seats and save your shortlist.</p>
         </div>
 
         <div className="prev-authcard">
-          {error && <div className="prev-autherr">{error}</div>}
-          <form onSubmit={submit}>
-            <label className="prev-flabel">Email address</label>
-            <input className="prev-input" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
+          {error && <div className="prev-autherr" role="alert">{error}</div>}
+          <form onSubmit={submit} noValidate>
+            <label className="prev-flabel" htmlFor="login-email">Email address</label>
+            <input ref={emailRef} id="login-email" name="email" className="prev-input" type="email" inputMode="email" autoComplete="email" spellCheck={false} autoCapitalize="none" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" aria-invalid={!!error && !email} />
 
-            <label className="prev-flabel" style={{ marginTop: 14 }}>Password</label>
+            <label className="prev-flabel" htmlFor="login-password" style={{ marginTop: 14 }}>Password</label>
             <div style={{ position: 'relative' }}>
-              <input className="prev-input" type={show ? 'text' : 'password'} autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" style={{ paddingRight: 42 }} />
-              <button type="button" onClick={() => setShow((s) => !s)} aria-label="Toggle password" style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer' }}>
+              <input id="login-password" name="password" className="prev-input" type={show ? 'text' : 'password'} autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Your password…" style={{ paddingRight: 42 }} aria-invalid={!!error && !password} />
+              <button type="button" onClick={() => setShow((s) => !s)} aria-pressed={show} aria-label={show ? 'Hide password' : 'Show password'} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer' }}>
                 {show ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
