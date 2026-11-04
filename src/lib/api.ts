@@ -224,7 +224,7 @@ export const assistantAPI = {
     const response = await api.post(
       '/api/assistant/chat',
       { message, history: cleanHistory, ...(location ? { location } : {}) },
-      { timeout: 120000 }
+      { timeout: 290000 }
     )
     return response.data
   },
