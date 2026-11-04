@@ -9,6 +9,7 @@ import { matchesGradeFilter, GradeFilterKey, GRADE_CHIPS } from '@/lib/stages'
 import PartnerMarquee from './components/PartnerMarquee'
 import PrevSchoolCard from './components/PrevSchoolCard'
 import OrbitStage from './components/OrbitStage'
+import PrevFooter from './components/PrevFooter'
 import { Map as MapIcon, ArrowRight, Search, Check } from 'lucide-react'
 
 const H1_WORDS = ['Find', 'the']
@@ -232,6 +233,9 @@ export default function PreviewHome() {
           </div>
         </div>
       </section>
+
+      {/* Footer lives on the home page only */}
+      <PrevFooter />
     </>
   )
 }

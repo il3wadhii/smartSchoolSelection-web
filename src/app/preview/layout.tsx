@@ -4,7 +4,6 @@ import './preview.css'
 import './glass.css'
 import PrevPortalBar from './components/PrevPortalBar'
 import PrevHeader from './components/PrevHeader'
-import PrevFooter from './components/PrevFooter'
 import PrevAssistant from './components/PrevAssistant'
 import Skyline from './components/Skyline'
 import { THEME_BOOT_SCRIPT } from './lib/look'
@@ -28,7 +27,7 @@ export default function PreviewLayout({ children }: { children: React.ReactNode 
       <PrevPortalBar />
       <PrevHeader />
       <main>{children}</main>
-      <PrevFooter />
+      {/* footer is on the home page only (preview/page.tsx) */}
       <PrevAssistant />
     </div>
   )
