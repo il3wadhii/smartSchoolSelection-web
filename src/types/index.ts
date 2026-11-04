@@ -50,6 +50,9 @@ export interface SchoolDetails extends Omit<School, 'rating'> {
   }
   gradeFees?: Array<{ feesID?: number; grade: string; fees: number }> | null
   availability?: Array<{ availabilityID?: number; grade: string; availableSpots: number }> | null
+  /** Extra charges set by the school (signed-in parents only). */
+  extraFees?: Array<{ extraFeeID?: number; label: string; amount: number; frequency: 'yearly' | 'one_time'; mode: 'included' | 'optional' | 'hidden' }>
+  siblingDiscountPct?: number
 }
 
 export interface Rating {

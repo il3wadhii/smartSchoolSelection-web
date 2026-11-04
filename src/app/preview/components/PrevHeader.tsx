@@ -21,6 +21,7 @@ export default function PrevHeader() {
           <Link href="/preview/map">Map</Link>
           <Link href="/preview/compare">Compare</Link>
           <Link href="/preview/saved">Saved</Link>
+          <Link href="/preview/family">My family</Link>
           <Link href="/preview#about">About</Link>
         </nav>
         <div className="prev-actions">

@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { userAPI } from '@/lib/api'
@@ -165,6 +166,14 @@ export default function ProfilePage() {
           {saving ? 'Saving…' : 'Save changes'}
         </button>
       </form>
+
+      <Link href="/preview/family" className="card p-5 mt-4 flex items-center justify-between hover:bg-gray-50">
+        <span>
+          <span className="block font-semibold text-secondary-900">My family</span>
+          <span className="block text-sm text-secondary-400">Your children, their schools and the family&apos;s yearly cost</span>
+        </span>
+        <span aria-hidden="true" className="text-secondary-400">›</span>
+      </Link>
     </div>
   )
 }

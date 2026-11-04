@@ -24,6 +24,18 @@ const GRADE_KEY = 'compare_grade'
 const fmtKD = new Intl.NumberFormat('en-KW', { maximumFractionDigits: 0 })
 const STAGE_DOT: Record<StageKey, string> = { nur: '#F4961E', kg: '#5DCAA5', pri: '#1F8A78', int: '#3E7CB1', high: '#155E51' }
 
+function FamilyCostLink() {
+  return (
+    <div className="prev-card prev-fam-link">
+      <div>
+        <b>More than one child?</b>
+        <p>Compare what your whole family pays a year, extras and sibling discounts included.</p>
+      </div>
+      <Link href="/preview/family/compare" className="btnT">Compare Family Cost</Link>
+    </div>
+  )
+}
+
 function initials(name: string) {
   return name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase()
 }
@@ -191,6 +203,7 @@ export default function PreviewCompare() {
               <Check size={13} style={{ color: 'var(--teald)' }} /> = best in row · — = not published for {grade}
             </p>
             {!maxReached && <div style={{ maxWidth: 360, marginTop: 14 }}><SchoolPicker label="Add another school (up to 4)…" /></div>}
+            <FamilyCostLink />
           </>
         )}
       </div>

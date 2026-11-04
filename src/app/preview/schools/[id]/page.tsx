@@ -8,6 +8,8 @@ import { schoolsAPI, getImageUrl } from '@/lib/api'
 import { SchoolDetails, Rating } from '@/types'
 import { schoolStages, STAGE_LABEL, StageKey, stageGradeGroups } from '@/lib/stages'
 import SaveHeart from '../../components/SaveHeart'
+import CostCalculator from '../../components/CostCalculator'
+import { toCostInfo } from '../../lib/family'
 import { useAuth } from '@/contexts/AuthContext'
 import { ArrowLeft, MapPin, Phone, Globe, Scale, Lock, ChevronDown, Star, Navigation } from 'lucide-react'
 
@@ -87,6 +89,7 @@ export default function PreviewSchoolDetail() {
   }, [id])
 
   const stageGroups = useMemo(() => stageGradeGroups(school?.gradeFees, school?.availability), [school])
+  const costInfo = useMemo(() => (school?.gradeFees?.length ? toCostInfo(school) : null), [school])
 
   if (loading) {
     return <div className="prev-c" style={{ paddingTop: 30 }}><div className="prev-spinner" /></div>
@@ -260,6 +263,8 @@ export default function PreviewSchoolDetail() {
             ) : isAuthenticated ? (
               <div className="prev-card" style={{ textAlign: 'center', color: 'var(--muted)', fontWeight: 600 }}>No fees or seats published for this school yet.</div>
             ) : null}
+
+            {isAuthenticated && costInfo && <CostCalculator info={costInfo} />}
           </>
         )}
 
