@@ -171,6 +171,26 @@ export const userAPI = {
   },
 }
 
+// ─── Seat alerts (email when a seat opens in a watched grade) ───────────────
+
+export interface SeatAlert {
+  alertID: number
+  schoolID: number
+  schoolName?: string
+  schoolImgURL?: string | null
+  grade: string
+  isActive: boolean
+  notifiedOn: string | null
+  createdOn: string
+  availableSpots?: number | null
+}
+
+export const seatAlertsAPI = {
+  list: async (): Promise<ApiResponse> => (await api.get('/api/users/seat-alerts')).data,
+  add: async (schoolID: number, grade: string): Promise<ApiResponse> => (await api.post('/api/users/seat-alerts', { schoolID, grade })).data,
+  remove: async (alertID: number): Promise<ApiResponse> => (await api.delete(`/api/users/seat-alerts/${alertID}`)).data,
+}
+
 // ─── AI assistant (local LLM, grounded in school data) ──────────────────────
 
 export interface AssistantMessage {

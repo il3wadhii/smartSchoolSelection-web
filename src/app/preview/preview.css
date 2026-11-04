@@ -767,3 +767,30 @@
   .prev-fam-total .n { font-size: 34px; }
   .prev-fc-table { font-size: 14px; }
 }
+
+/* ── Seat alerts ───────────────────────────────────────── */
+.prev-graderow .s { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.prev-notify { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-poppins); font-weight: 700; font-size: 12.5px; padding: 5px 10px; border-radius: 99px; border: 1.5px solid var(--teal); background: #fff; color: var(--teald); cursor: pointer; transition: background .15s, color .15s; }
+.prev-notify:hover { background: var(--ttint); }
+.prev-notify.on { background: var(--teal); color: #fff; }
+.prev-notify:disabled { opacity: .6; cursor: progress; }
+.prev-notify:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+.prev-notify-note { display: flex; align-items: flex-start; gap: 7px; font-size: 14px; color: var(--muted); margin: 12px 2px 0; }
+.prev-notify-note b { color: var(--ink); }
+.prev-notify-note svg { flex-shrink: 0; margin-top: 3px; }
+.prev-notify-note .err { color: var(--oranged); font-weight: 700; }
+.prev-alerts { margin-top: 34px; }
+.prev-alerts h3 { font-family: var(--font-poppins); font-size: 20px; font-weight: 800; margin: 0 0 4px; color: var(--ink); }
+.prev-alerts > p { color: var(--muted); margin: 0 0 14px; font-size: 15px; }
+.prev-alert { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+.prev-alert .ic { width: 38px; height: 38px; border-radius: 12px; background: var(--ttint); color: var(--teald); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.prev-alert.done .ic { background: var(--otint); color: var(--oranged); }
+.prev-alert .tx { flex: 1; min-width: 0; }
+.prev-alert .tx a { font-family: var(--font-poppins); font-weight: 700; font-size: 15px; color: var(--ink); }
+.prev-alert .tx a:hover { color: var(--teal); }
+.prev-alert .tx small { display: block; font-size: 13.5px; color: var(--muted); }
+.prev-alert .act { display: flex; gap: 8px; flex-shrink: 0; }
+.prev-alert .act button { font-family: var(--font-poppins); font-weight: 700; font-size: 13px; padding: 7px 12px; border-radius: 10px; border: 1px solid var(--line); background: #fff; color: var(--ink); cursor: pointer; }
+.prev-alert .act button:hover { background: var(--ttint); }
+.prev-alert .act button.again { border-color: var(--teal); color: var(--teald); }
+.prev-alerts .prev-card { margin-bottom: 10px; }
