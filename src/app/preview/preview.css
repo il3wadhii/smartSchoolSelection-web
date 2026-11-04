@@ -395,9 +395,9 @@
 }
 
 /* ── AI assistant chat widget ──────────────────────────────────────── */
-.prev-assist-fab { position: fixed; bottom: 22px; right: 22px; z-index: 60; width: 56px; height: 56px; border-radius: 50%; background: var(--teal); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform .15s, background .2s; }
+.prev-assist-fab { position: fixed; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); right: calc(22px + env(safe-area-inset-right, 0px)); z-index: 60; width: 56px; height: 56px; border-radius: 50%; background: var(--teal); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform .15s, background .2s; }
 .prev-assist-fab:hover { background: var(--teald); transform: translateY(-2px); }
-.prev-assist-panel { overscroll-behavior: contain; position: fixed; bottom: 22px; right: 22px; z-index: 60; width: calc(100vw - 44px); max-width: 380px; height: 540px; max-height: calc(100vh - 44px); background: var(--cream); border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 24px 60px rgba(20,35,46,.22); display: flex; flex-direction: column; overflow: hidden; }
+.prev-assist-panel { overscroll-behavior: contain; position: fixed; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); right: calc(22px + env(safe-area-inset-right, 0px)); transform-origin: bottom right; animation: prev-assist-up .18s ease-out; z-index: 60; width: calc(100vw - 44px); max-width: 380px; height: 540px; max-height: calc(100vh - 44px); background: var(--cream); border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 24px 60px rgba(20,35,46,.22); display: flex; flex-direction: column; overflow: hidden; }
 .prev-assist-head { background: var(--teal); color: #fff; padding: 13px 14px; display: flex; align-items: center; justify-content: space-between; }
 .prev-assist-head .who { display: flex; align-items: center; gap: 10px; }
 .prev-assist-head .ic { width: 34px; height: 34px; border-radius: 10px; background: rgba(255,255,255,.18); display: flex; align-items: center; justify-content: center; }
@@ -794,3 +794,6 @@
 .prev-alert .act button:hover { background: var(--ttint); }
 .prev-alert .act button.again { border-color: var(--teal); color: var(--teald); }
 .prev-alerts .prev-card { margin-bottom: 10px; }
+
+@keyframes prev-assist-up { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .prev-assist-panel { animation: none; } }
