@@ -90,5 +90,3 @@
 .prev[data-look="day"] .prev-search .prev-input { background: rgba(255,255,255,.75); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
 
 @media (prefers-reduced-motion: reduce) { .prev-skyline { transition: none; } }
-/* night: white hero copy stays readable over the light horizon band */
-.prev[data-look="night"] .prev-show-h1, .prev[data-look="night"] .prev-show-sub { text-shadow: 0 2px 16px rgba(10,26,32,.45); }
