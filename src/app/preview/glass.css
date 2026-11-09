@@ -17,7 +17,8 @@
 .prev[data-look="day"] { background: #E6F2EE; }   /* sky colour under the canvas: no light flash, honest contrast maths */
 .prev[data-look="night"] { background: #0A1A20; }
 /* lift page content above the skyline canvas — but not the floating assistant (it must stay position: fixed) */
-.prev[data-look] > :not(.prev-skyline):not(.prev-assist-fab):not(.prev-assist-panel) { position: relative; z-index: 1; }
+/* lift page content above the fixed skyline — but NOT the header: it keeps its own sticky + z-index 50 rule below */
+.prev[data-look] > :not(.prev-skyline):not(.prev-assist-fab):not(.prev-assist-panel):not(.prev-header) { position: relative; z-index: 1; }
 .prev[data-look] .prev-header { position: sticky; z-index: 50; }
 
 /* hero: no own background, header floats over the sky */
