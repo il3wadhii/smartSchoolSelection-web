@@ -1,0 +1,84 @@
+/* ── Child profiles (family form, import card, calculator + notify pickers) ──
+   Uses the .prev tokens from preview.css (--teal --teald --ttint --otint --oranged --ink --muted --line).
+   Selectors start with .prev so they win regardless of CSS load order. Flat: no gradients, no shadows. */
+
+/* focus: 2px teal ring, 2px offset, on every control in these pieces */
+.prev .prev-ch :is(button, select, input, a):focus-visible,
+.prev .prev-ch-notify :is(button, input):focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+/* controls are at least 48px high, body text 16px */
+.prev .prev-ch .prev-input,
+.prev .prev-ch .prev-select { min-height: 48px; font-size: 16px; width: 100%; }
+.prev .prev-ch .btnT, .prev .prev-ch .btnO { min-height: 48px; }
+.prev .prev-ch label, .prev .prev-ch legend { display: block; font-size: 16px; font-weight: 700; color: var(--ink); margin: 0 0 6px; padding: 0; }
+.prev .prev-ch-hint { font-size: 14px; color: var(--muted); margin: 6px 0 0; }
+.prev .prev-ch-h { font-family: var(--font-poppins); font-size: 20px; font-weight: 800; margin: 0 0 14px; color: var(--ink); }
+.prev .prev-ch-field { margin-bottom: 16px; border: 0; padding: 0; min-width: 0; }
+.prev .prev-ch-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.prev .prev-ch-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.prev .prev-ch-consent { font-size: 14px; color: var(--muted); margin: 14px 0 0; }
+.prev .prev-ch-err { color: var(--oranged); font-weight: 700; font-size: 15px; margin: 10px 0 0; }
+.prev .prev-ch-ok { color: var(--teald); font-weight: 700; font-size: 15px; margin: 0 0 12px; }
+
+/* suggested-grade row */
+.prev .prev-ch-sug { background: #E6F2EE; color: #15232E; border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.prev .prev-ch-sug b { font-family: var(--font-poppins); font-weight: 700; font-size: 16px; }
+.prev .prev-ch-sug-note { font-size: 14px; color: var(--muted); margin: 8px 0 0; }
+.prev .prev-ch-ghost { min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1.5px solid var(--teal); background: transparent; color: var(--teald); font-family: var(--font-poppins); font-weight: 700; font-size: 15px; cursor: pointer; }
+.prev .prev-ch-ghost:hover { background: var(--ttint); }
+.prev .prev-ch-sug .prev-ch-ghost { background: #fff; color: #155E51; }
+
+/* grade chips wrap, 48px high */
+.prev .prev-ch-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.prev .prev-ch-chips .prev-chip.sm { min-height: 48px; min-width: 48px; font-size: 15px; padding: 0 16px; display: inline-flex; align-items: center; justify-content: center; }
+.prev .prev-ch-chips-label { font-size: 14px; font-weight: 700; color: var(--muted); margin: 12px 0 0; }
+
+/* tags on grade */
+.prev .prev-est { display: inline-block; font-size: 12.5px; font-weight: 700; padding: 2px 9px; border-radius: 99px; background: var(--otint); color: #9A520A; }
+.prev .prev-ch-grade { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; background: var(--ttint); color: var(--teald); font-weight: 700; font-size: 14px; padding: 3px 11px; border-radius: 99px; }
+.prev .prev-ch-grade.none { background: var(--otint); color: #9A520A; }
+.prev .prev-ch-own { font-size: 12.5px; font-weight: 700; color: var(--muted); }
+
+/* list cards */
+.prev .prev-ch-acts { display: flex; gap: 8px; flex-shrink: 0; }
+.prev .prev-ch-act { display: inline-flex; align-items: center; gap: 6px; min-height: 48px; padding: 0 14px; border-radius: 12px; border: 1.5px solid var(--line); background: #fff; color: #15232E; font-family: var(--font-poppins); font-weight: 700; font-size: 15px; cursor: pointer; }
+.prev .prev-ch-act:hover { background: var(--ttint); }
+.prev .prev-ch-act.rm:hover { background: var(--otint); }
+.prev .prev-ch-act:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.prev .prev-ch-line { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.prev .prev-ch-card .prev-kid-school { height: 48px; font-size: 16px; max-width: 100%; }
+.prev .prev-ch-card :is(select, button.prev-switch):focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.prev .prev-ch-card .prev-kid-confirm { font-size: 16px; }
+.prev .prev-ch-card .prev-kid-confirm button { min-height: 48px; min-width: 48px; font-size: 15px; }
+.prev .prev-ch-card .prev-kid-confirm button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+/* empty state + import card */
+.prev .prev-ch-empty { text-align: center; padding: 28px 20px; }
+.prev .prev-ch-empty p { font-size: 16px; color: var(--muted); margin: 0 0 14px; }
+.prev .prev-ch-import { border: 1.5px solid var(--teal); background: var(--ttint); color: #15232E; }
+.prev .prev-ch-import p { font-size: 16px; margin: 0 0 12px; }
+.prev .prev-ch-import-kid { padding: 12px 0; border-top: 1px solid var(--line); }
+.prev .prev-ch-import-kid:first-of-type { border-top: 0; }
+
+/* calculator child select + notify picker */
+.prev .prev-ch-calc { margin-bottom: 16px; }
+.prev .prev-ch-calc .prev-select { min-height: 48px; font-size: 16px; width: 100%; max-width: 360px; }
+.prev .prev-ch-calc label { display: block; font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.prev .prev-ch-calc a { color: var(--teald); font-weight: 700; text-decoration: underline; }
+.prev .prev-ch-calc a:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.prev .prev-ch-from { font-size: 14px; color: var(--muted); margin: 6px 0 0; }
+.prev .prev-ch-unpub { font-size: 16px; background: var(--otint); color: #15232E; border-radius: 12px; padding: 12px 14px; margin: 14px 0 0; }
+.prev .prev-ch-notify { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; font-size: 16px; }
+.prev .prev-ch-notify .lbl { font-weight: 700; color: var(--ink); }
+.prev .prev-ch-notify button { min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1.5px solid var(--teal); background: #fff; color: #155E51; font-family: var(--font-poppins); font-weight: 700; font-size: 15px; cursor: pointer; }
+.prev .prev-ch-notify button:hover { background: var(--ttint); }
+.prev .prev-ch-notify button.go { background: var(--teal); color: #fff; }
+.prev .prev-ch-radio { flex-basis: 100%; display: flex; align-items: center; gap: 10px; min-height: 48px; font-size: 16px; color: #15232E; background: #fff; border: 1.5px solid var(--line); border-radius: 12px; padding: 0 14px; cursor: pointer; }
+.prev .prev-ch-radio input { width: 22px; height: 22px; accent-color: #1F8A78; }
+
+@media (max-width: 640px) {
+  .prev .prev-ch-row2 { grid-template-columns: 1fr; }
+  .prev .prev-ch-acts { width: 100%; }
+  .prev .prev-ch-acts .prev-ch-act { flex: 1; justify-content: center; }
+  .prev .prev-ch-actions > * { flex: 1 1 100%; justify-content: center; }
+}
