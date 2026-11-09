@@ -1,10 +1,14 @@
 // The parent's children for the family cost plan. Saved in this browser
 // (localStorage) — same shape as the app, which keeps them on the phone.
+// Signed-in parents now keep children on their account (see ./children.ts);
+// this file still reads the old device list so it can be offered for import.
 import { schoolsAPI } from '@/lib/api'
 import { Child, SchoolCostInfo } from './cost'
 
 const KEY = 'family_children_v1'
+const SNOOZE_KEY = 'family_import_snooze_v1'
 const EVT = 'ssc-family-change'
+const SNOOZE_MS = 30 * 24 * 60 * 60 * 1000
 
 export function loadChildren(): Child[] {
   try {
@@ -22,6 +26,32 @@ export function saveChildren(children: Child[]): void {
     window.dispatchEvent(new Event(EVT))
   } catch {
     /* storage blocked — the plan still works for this visit */
+  }
+}
+
+/** Forget the device-only children once they are safely on the account. */
+export function clearDeviceChildren(): void {
+  try {
+    localStorage.removeItem(KEY)
+    window.dispatchEvent(new Event(EVT))
+  } catch {
+    /* storage blocked */
+  }
+}
+
+/** "Not now" on the import card hides it for 30 days. */
+export function importSnoozed(): boolean {
+  try {
+    return Number(localStorage.getItem(SNOOZE_KEY)) > Date.now()
+  } catch {
+    return false
+  }
+}
+export function snoozeImport(): void {
+  try {
+    localStorage.setItem(SNOOZE_KEY, String(Date.now() + SNOOZE_MS))
+  } catch {
+    /* storage blocked */
   }
 }
 
