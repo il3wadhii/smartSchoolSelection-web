@@ -2,6 +2,7 @@
 // Seat alerts for the signed-in parent: load once, toggle per (school, grade).
 import { useCallback, useEffect, useState } from 'react'
 import { SeatAlert, seatAlertsAPI } from '@/lib/api'
+import { addSeatAlertForChild } from '@/lib/childrenApi'
 
 const GRADES = ['Preschool', 'KG1', 'KG2', ...Array.from({ length: 13 }, (_, i) => `Grade ${i + 1}`)]
 
@@ -31,12 +32,14 @@ export function useSeatAlerts(enabled: boolean) {
     return alerts.find((a) => a.schoolID === schoolID && a.grade === g && a.isActive)
   }
 
-  const toggle = async (schoolID: number, grade: string) => {
+  /** Turn the alert on (optionally for one child) or off. */
+  const toggle = async (schoolID: number, grade: string, childID?: number) => {
     const key = `${schoolID}:${grade}`
     setBusy(key); setError('')
     try {
       const on = find(schoolID, grade)
       if (on) await seatAlertsAPI.remove(on.alertID)
+      else if (childID != null) await addSeatAlertForChild(schoolID, grade, childID)
       else await seatAlertsAPI.add(schoolID, grade)
       await reload()
     } catch (e: any) {
