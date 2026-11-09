@@ -9,10 +9,12 @@ import { SchoolDetails, Rating } from '@/types'
 import { schoolStages, STAGE_LABEL, StageKey, stageGradeGroups } from '@/lib/stages'
 import SaveHeart from '../../components/SaveHeart'
 import CostCalculator from '../../components/CostCalculator'
+import NotifyMe from '../../components/NotifyMe'
 import { toCostInfo } from '../../lib/family'
+import { useChildren } from '../../lib/children'
 import { normGrade, useSeatAlerts } from '../../lib/seatAlerts'
 import { useAuth } from '@/contexts/AuthContext'
-import { ArrowLeft, MapPin, Phone, Globe, Scale, Lock, ChevronDown, Star, Navigation, Bell, BellRing } from 'lucide-react'
+import { ArrowLeft, MapPin, Phone, Globe, Scale, Lock, ChevronDown, Star, Navigation, Bell } from 'lucide-react'
 
 const STAGE_DOT: Record<StageKey, string> = {
   nur: '#F4961E', kg: '#5DCAA5', pri: '#1F8A78', int: '#3E7CB1', high: '#155E51',
@@ -54,6 +56,7 @@ export default function PreviewSchoolDetail() {
   const [tab, setTab] = useState<TabKey>('info')
   const [open, setOpen] = useState<Record<string, boolean>>({})
   const seatAlerts = useSeatAlerts(isAuthenticated)
+  const kids = useChildren(isAuthenticated)
 
   // ?tab=fees deep-links a tab; the active tab is written back without navigation.
   useEffect(() => {
@@ -255,17 +258,9 @@ export default function PreviewSchoolDetail() {
                               <span className="f">{r.fees !== null ? `KD ${fmtKD.format(r.fees)}` : '—'}</span>
                               <span className="s">
                                 {r.seats === null ? '—' : r.seats > 0 ? <span className="ok">{r.seats} open</span> : <span className="full">Full</span>}
-                                {isAuthenticated && (r.seats === null || r.seats === 0) && normGrade(r.grade) && (() => {
-                                  const on = !!seatAlerts.find(school.schoolID, r.grade)
-                                  return (
-                                    <button type="button" className={`prev-notify${on ? ' on' : ''}`} aria-pressed={on}
-                                      disabled={seatAlerts.busy === `${school.schoolID}:${r.grade}`}
-                                      aria-label={on ? `Stop seat alert for ${normGrade(r.grade)}` : `Email me when a seat opens in ${normGrade(r.grade)}`}
-                                      onClick={() => seatAlerts.toggle(school.schoolID, r.grade)}>
-                                      {on ? <BellRing size={14} /> : <Bell size={14} />}{on ? 'Alert on' : 'Notify me'}
-                                    </button>
-                                  )
-                                })()}
+                                {isAuthenticated && (r.seats === null || r.seats === 0) && normGrade(r.grade) && (
+                                  <NotifyMe schoolID={school.schoolID} grade={r.grade} seatAlerts={seatAlerts} kids={kids} />
+                                )}
                               </span>
                             </div>
                           ))}
@@ -286,7 +281,7 @@ export default function PreviewSchoolDetail() {
               </p>
             )}
 
-            {isAuthenticated && costInfo && <CostCalculator info={costInfo} />}
+            {isAuthenticated && costInfo && <CostCalculator info={costInfo} kids={kids} />}
           </>
         )}
 
